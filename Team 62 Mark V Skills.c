@@ -2,12 +2,12 @@
 
 task drivebaseControlGyroSkills(){
 	//desiredDrive = (SensorValue(leftEncoder) + SensorValue(rightEncoder)) / 2;
-	desiredDrive = SensorValue(leftEncoder);
-	float kP = 0.115;
+	desiredDrive = -SensorValue(leftEncoder);
+	float kP = 0.105;
 	float kD = 0.081;
-	float kPt = 0.8201;
+	float kPt = 0.33;
 	float kDt = 0.0;
-	float kPt2 = 0.1114;
+	float kPt2 = 0.13;
 	float kDt2 = 0.58762;
 	float error = 0;
 	float errorT = 0;
@@ -43,160 +43,201 @@ task drivebaseControlGyroSkills(){
 	}
 }
 
-int stepWait = 350;
+int stepWait = 35;
+
+void resetGyro10PtBar(){
+	float oldDesiredDrive = desiredDrive;
+	stopTask(drivebaseControlGyroSkills);
+	drive(35, 35);
+	float oldVal = SensorValue(leftEncoder);
+	while(!deadband2(oldVal, SensorValue(leftEncoder), 15)){
+		oldVal = SensorValue(leftEncoder);
+		wait1Msec(45);
+	}
+	wait1Msec(300);
+	SensorValue(Gyro) = 0;
+	desiredTurn = 0;
+	drive(0, 0);
+	startTask(drivebaseControlGyroSkills);
+	desiredDrive = -SensorValue(leftEncoder);
+}
 
 void goal1(){
-	mobileGoalOut();
+	mobileGoal = false;
 	wait1Msec(stepWait);
 	driveBothWait(1500);
 	mobileGoalIn();
-	wait1Msec(stepWait);
-	driveBothWait(-1050);
-	wait1Msec(550);
+	moveStage2WaitUntil(90, 60);
+	wait1Msec(300);
+	getOutOfTheWayLow();
+	driveBothWait(-1300);
 	turn45DegreesR();
 	wait1Msec(stepWait);
-	driveBothWait(-840);
+	driveBothWait(-640);
 	wait1Msec(stepWait);
 	turn90DegreesR();
 	wait1Msec(stepWait);
-	driveBothWaitUntil(1100, 800);
-	mobileGoalOut();
-	wait1Msec(stepWait);
+	driveBothWaitUntil(850, 250);
+	mobileGoal = false;
+	driveBothWait(0);
+	wait1Msec(stepWait+300);
 }
 
 void goal2(){
-	driveBothWaitUntil(-750, -675);
-	wait1Msec(stepWait);
-	mobileGoalIn();
-	wait1Msec(stepWait);
-	turn90DegreesR();
-	wait1Msec(stepWait);
-	driveBothWaitUntil(400, 350);
+	mobileGoal = true;
+	driveBothWaitUntil(-1000, -500);
+	driveBothWait(0);
+	mobileGoal = false;
 	wait1Msec(stepWait);
 	turn90DegreesR();
 	wait1Msec(stepWait);
-	mobileGoalOut();
+	driveBothWait(330);
 	wait1Msec(stepWait);
-	driveBothWait(675);
+	turn90DegreesR();
+	wait1Msec(stepWait);
+	driveBothWait(900);
 	wait1Msec(stepWait);
 	mobileGoalIn();
 	wait1Msec(stepWait);
-	turn180DegreesL();
+	turnWait(1820);
 	wait1Msec(stepWait);
-	driveBothWait(1000);
-	wait1Msec(stepWait);
-	mobileGoalOut();
-	wait1Msec(stepWait);
+	driveBothWaitUntil(1130, 350);
+	mobileGoal = false;
+	driveBothWait(0);
+	//resetGyro10PtBar();
 }
 
 void goal3(){
-	driveBothWait(-300);
+	mobileGoal = true;
+	driveBothWait(-330);
 	wait1Msec(stepWait);
-	mobileGoalIn();
+	//mobileGoalIn();
 	wait1Msec(stepWait);
 	turn90DegreesR();
 	wait1Msec(stepWait);
-	driveBothWait(425);
+	driveBothWait(420);
 	wait1Msec(stepWait);
-	turn45DegreesR();
+	turnWait(-510);
+	mobileGoal = false;
+	wait1Msec(stepWait+150);
+	//mobileGoalOut();
 	wait1Msec(stepWait);
-	mobileGoalOut();
+	driveBothWait(1270);
 	wait1Msec(stepWait);
-	driveBothWait(1175);
-	wait1Msec(stepWait);
-	mobileGoalIn();
-	wait1Msec(stepWait);
-	driveBothWait(-1150);
+	mobileGoal = true;
+	wait1Msec(stepWait+400);
+	driveBothWait(-1270);
 	wait1Msec(stepWait);
 	turn45DegreesL();
 	wait1Msec(stepWait);
-	driveBothWait(-950);
+	driveBothWait(-665);
 	wait1Msec(stepWait);
 	turn90DegreesL();
 	wait1Msec(stepWait);
+	mobileGoal = false;
 	driveBothWait(300);
 	wait1Msec(stepWait);
-	mobileGoalOut();
+	resetGyro10PtBar();
 	wait1Msec(stepWait);
 }
 
 void goal4(){
-	driveBothWait(-300);
-	wait1Msec(stepWait);
-	mobileGoalIn();
-	wait1Msec(stepWait);
-	turn90DegreesL();
-	wait1Msec(stepWait);
-	driveBothWait(575);
+	driveBothWaitUntil(-380, -170);
+	mobileGoal = true;
+	driveBothWait(0);
 	wait1Msec(stepWait);
 	turn90DegreesL();
 	wait1Msec(stepWait);
-	mobileGoalOut();
+	mobileGoal = false;
+	driveBothWait(335);
 	wait1Msec(stepWait);
-	driveBothWait(650);
+	turn90DegreesL();
+	wait1Msec(stepWait);
+	driveBothWait(855);
 	wait1Msec(stepWait);
 	mobileGoalIn();
-	wait1Msec(stepWait);
 	turn180DegreesL();
-	wait1Msec(stepWait);
-	driveBothWait(1075);
-	wait1Msec(stepWait);
-	mobileGoalOut();
-	wait1Msec(stepWait);
+	driveBothWaitUntil(960, 420);
+	mobileGoal = false;
+	driveBothWait(0);
 }
 
 void goal5(){
-	driveBothWait(-350);
-	wait1Msec(stepWait);
-	mobileGoalIn();
-	wait1Msec(stepWait);
+	driveBothWait(-550);
 	turn180DegreesL();
-	wait1Msec(stepWait);
-	mobileGoalOut();
-	wait1Msec(stepWait);
-	driveBothWait(1775);
-	wait1Msec(stepWait);
-	mobileGoalIn();
-	wait1Msec(stepWait);
-	driveBothWait(850);
+	turnWait(15);
+	driveBothWaitUntil(2480, 1810);
+	mobileGoal = true;
+	driveBothWait(0);
 	wait1Msec(stepWait);
 	turn90DegreesL();
 	wait1Msec(stepWait);
-	driveBothWait(375);
+	driveBothWait(465);
 	wait1Msec(stepWait);
 	turn90DegreesR();
 	wait1Msec(stepWait);
-	driveBothWait(675);
-	wait1Msec(stepWait);
-	mobileGoalOut();
+	driveBothWaitUntil(920, 360);
+	mobileGoal = false;
+	driveBothWait(0);
 }
 
 void goal6(){
-	driveBothWait(-675);
+	driveBothWaitUntil(-920, -300);
+	mobileGoal = true;
+	driveBothWait(0);
+	mobileGoal = false;
 	wait1Msec(stepWait);
-	mobileGoalIn();
+	turn90DegreesR();
 	wait1Msec(stepWait);
-	turn90DegreesL();
+	driveBothWait(-500);
 	wait1Msec(stepWait);
-	driveBothWait(375);
-	wait1Msec(stepWait);
-	turn90DegreesL();
-	wait1Msec(stepWait);
-	mobileGoalOut();
-	wait1Msec(stepWait);
-	driveBothWait(675);
+	turn90DegreesR();
+	driveBothWait(665);
 	wait1Msec(stepWait);
 	mobileGoalIn();
 	wait1Msec(stepWait);
 	turn180DegreesL();
 	wait1Msec(stepWait);
-	driveBothWait(975);
+	driveBothWait(840);
 	wait1Msec(stepWait);
-	mobileGoalOut();
+	resetGyro10PtBar();
+	mobileGoal = false;
+	wait1Msec(1000);
 }
 
 void goal7(){
+	driveBothWaitUntil(-285, -170);
+	mobileGoal = true;
+	driveBothWait(0);
+	wait1Msec(stepWait);
+	turn90DegreesL();
+	wait1Msec(stepWait);
+	driveBothWait(490);
+	wait1Msec(stepWait);
+	turn45DegreesL();
+	mobileGoal = false;
+	driveBothWait(1200);
+	wait1Msec(stepWait);
+	mobileGoal = true;
+	wait1Msec(stepWait+400);
+	driveBothWait(-1150);
+	wait1Msec(stepWait);
+	turn45DegreesR();
+	wait1Msec(stepWait);
+	driveBothWait(-700);
+	wait1Msec(stepWait);
+	turn90DegreesR();
+	wait1Msec(stepWait);
+	driveBothWaitUntil(350,0);
+	mobileGoal = false;
+	driveBothWait(0);
+}
 
+void endGoal7(){
+	driveBothWait(-285);
+	wait1Msec(stepWait);
+	//mobileGoalIn();
+	wait1Msec(stepWait);
 }
 
 void goal8(){
@@ -210,6 +251,7 @@ void auton(){
 	datalogStart();
 	startTask(dataLog);
 	startTask(drivebaseControlGyroSkills);
+	startTask(mobileGoalAuton);
 	autonRan = true;
 	startTask(stage1Control);
 	startTask(stage2Control);
@@ -221,7 +263,8 @@ void auton(){
 	goal4();
 	goal5();
 	goal6();
-	//goal7();
+	goal7();
+	endGoal7();
 	//goal8();
 
 	datalogStop();

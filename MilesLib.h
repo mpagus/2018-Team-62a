@@ -7,8 +7,8 @@ bool slewResetDrive = false;
 //drive
 void drive(int rVal, int lVal);
 
-int slew(int* slewVal, int val, int waitTime = 15){
-	*slewVal = *slewVal + 3;
+int slew(int* slewVal, int val, int waitTime = 15, int change = 2){
+	*slewVal = *slewVal + change;
 	wait1Msec(waitTime);
 	return limit(val, -*slewVal, *slewVal);
 }
@@ -103,7 +103,7 @@ void driveBoth(int value){
 	desiredDrive = desiredDrive + value;
 }
 
-void driveBothWaitUntil(int value, int continueValue, int normalContinue = 180, int derivativeContinue = 100, int tickNum = 10){
+void driveBothWaitUntil(int value, int continueValue, int normalContinue = 180, int derivativeContinue = 100, int tickNum = 8){
 	straight = true;
 	slewResetDrive = true;
 	desiredDrive = desiredDrive + value;
@@ -123,17 +123,21 @@ void driveBothWait(int value){
 	driveBothWaitUntil(value, value);
 }
 
-void turn(int value, int normalContinue = 140, int derivativeContinue = 70){
+void turn(int value, int normalContinue = 140, int derivativeContinue = 80){
 	straight = false;
 	slewResetDrive = true;
 	desiredTurn += value;
+	if(desiredTurn >= 3600)
+		desiredTurn = 3600 - desiredTurn;
 	desiredDrive = -SensorValue(leftEncoder);
 }
 
-void turnWait(int value, int normalContinue = 400, int derivativeContinue = 100, int tickNum = 10){
+void turnWait(int value, int normalContinue = 420, int derivativeContinue = 130, int tickNum = 10){
 	straight = false;
 	slewResetDrive = true;
 	desiredTurn += value;
+	if(desiredTurn >= 3600)
+		desiredTurn = 3600 - desiredTurn;
 	int ticks = 0;
 	float oldGyro = gyroLeftIsPositive()*SensorValue(Gyro);
 	while(ticks<tickNum){
@@ -187,8 +191,15 @@ void calibrateGyros(){
 
 //arm movement
 void moveSingleStageWaitUntil(tSensors sensor, float continueValue, int normalContinue){
-	while(deadband2(SensorValue(sensor), continueValue, normalContinue)){
-		wait1Msec(20);
+	if(continueValue > SensorValue(sensor)){
+		while(SensorValue(sensor) < continueValue - normalContinue){
+			wait1Msec(20);
+		}
+	}
+	else if(continueValue > SensorValue(sensor)){
+		while(SensorValue(sensor) > continueValue + normalContinue){
+			wait1Msec(20);
+		}
 	}
 }
 

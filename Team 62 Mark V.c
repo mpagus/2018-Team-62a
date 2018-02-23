@@ -127,7 +127,8 @@ task stage2Control(){
 		error = (desiredStage2+numRevolutions*ticksPerRevolution) - (SensorValue(stage2Encoder) - stage2Scalar);
 		derivative = error - old;
 		old = error;
-		towerStage2(slew(&slewVal, limit(error*kP2 + derivative*kD2/2), 8));
+		towerStage2(slew(&slewVal, limit(error*kP2 + derivative*kD2/2), 8, 5));
+		//towerStage2(limit(error*kP2 + derivative*kD2/2));
 		delay(2);
 	}
 }
@@ -139,7 +140,7 @@ void moveStage1WaitUntil(float desiredValue, float continueValue){
 
 void moveStage1Wait(float desiredValue){
 	desiredStage1 = desiredValue;
-	moveSingleStageWait(stage1Encoder, desiredValue, 40, 40, 8);
+	moveSingleStageWait(stage1Encoder, desiredValue, 40, 40, 4);
 }
 
 void moveStage2WaitUntil(float desiredValue, float continueValue){
@@ -153,7 +154,7 @@ void moveStage2Wait(float desiredValue){
 	desiredStage2 = desiredValue;
 	resetSlewStage2 = true;
 	//moveSingleStageWait(stage2Encoder, desiredValue, 50, 50);
-	moveSingleStageWait(stage2Encoder, desiredValue+numRevolutions*ticksPerRevolution + 318, 60, 60, 8);
+	moveSingleStageWait(stage2Encoder, desiredValue+numRevolutions*ticksPerRevolution + 318, 60, 60, 4);
 }
 
 void moveBothStagesWait(float desiredValue1, float desiredValue2){
@@ -161,7 +162,7 @@ void moveBothStagesWait(float desiredValue1, float desiredValue2){
 	desiredStage2 = desiredValue2;
 	resetSlewStage2 = true;
 	//moveDoubleStageWait(stage1Encoder, desiredValue1, 60, 60, stage2Encoder, desiredValue2,  60, 60);
-	moveDoubleStageWait(stage1Encoder, desiredValue1, 40, 40, stage2Encoder, desiredValue2+numRevolutions*ticksPerRevolution + 318, 70, 70, 8);
+	moveDoubleStageWait(stage1Encoder, desiredValue1, 40, 40, stage2Encoder, desiredValue2+numRevolutions*ticksPerRevolution + 318, 70, 70, 4);
 }
 
 void stage2RevolutionNoWait(){
@@ -177,48 +178,48 @@ void stage2Revolution(){
 
 void groundPickUpCone(){
 	//desiredStage1 = -20;
-	desiredStage2 = 10;
+	desiredStage2 = 25;
 	stopTask(stage1Control);
 	towerStage1(-127);
-	wait1Msec(620);
+	wait1Msec(520);
 	startTask(stage1Control);
 	desiredStage1 = 10;
 	wait1Msec(50);
 }
 
 void groundPickUpConeWait(){
-	moveBothStagesWait(-20, 10);
+	moveBothStagesWait(-20, 25);
 }
 
 void groundSetUpCone(){
-	desiredStage1 = 235;
-	desiredStage2 = 10;
+	desiredStage1 = 185;
+	desiredStage2 = 25;
 }
 
 void groundSetUpConeWait(){
-	moveBothStagesWait(235, 10);
+	moveBothStagesWait(185, 10);
 }
 
 void normalStackCone(int cone){
 	//cone1
 	if(cone == 1){
 		moveStage2WaitUntil(90, 60);
-		moveStage1WaitUntil(375, 365);
-		moveBothStagesWait(385, -175);
+		moveStage1WaitUntil(375, 345);
+		moveBothStagesWait(385, -200);
 		moveBothStagesWait(145, -195);
 	}
 	//cone2
 	else if(cone == 2){
 		moveStage2WaitUntil(90, 60);
-		moveStage1Wait(425);
-		moveBothStagesWait(455, -160);
+		moveStage1WaitUntil(435, 405);
+		moveBothStagesWait(465, -160);
 		moveBothStagesWait(215, -215);
 	}
 	//cone3
 	else if(cone == 3){
 		moveStage2WaitUntil(90, 60);
-		moveStage1Wait(575);
-		moveBothStagesWait(585, -95);
+		moveStage1WaitUntil(595, 515);
+		moveBothStagesWait(595, -85);
 		moveBothStagesWait(235, -235);
 	}
 	//cone4
@@ -227,11 +228,11 @@ void normalStackCone(int cone){
 		//stage2RevolutionNoWait();
 		//moveStage1Wait(455);
 		//moveStage2Wait(50);
-		moveStage1WaitUntil(245, 130);
-		moveBothStagesWait(258, 755);
-		moveStage1Wait(195 - 10);
+		moveStage1WaitUntil(275, 130);
+		moveBothStagesWait(287, 755);
+		moveStage1Wait(130);
 		groundSetUpCone();
-		desiredStage1 = 140;
+		desiredStage1 = 120;
 		wait1Msec(200);
 	}
 	//cone5
@@ -241,36 +242,36 @@ void normalStackCone(int cone){
 		//moveStage1Wait(490);
 		//moveStage2Wait(50);
 		moveStage1WaitUntil(310, 130);
-		moveBothStagesWait(320, 755);
-		moveStage1Wait(255);
+		moveBothStagesWait(342, 755);
+		moveStage1Wait(170);
 		groundSetUpCone();
 		desiredStage1 = 200;
 		wait1Msec(200);
 	}
 	//cone6
 	else if(cone == 6){
-		moveStage1WaitUntil(375, 130);
-		moveBothStagesWait(395, 760);
-		moveStage1Wait(310);
+		moveStage1WaitUntil(405, 130);
+		moveBothStagesWait(410, 760);
+		moveStage1Wait(295);
 		groundSetUpCone();
 		desiredStage1 = 250;
 		wait1Msec(200);
 	}
 	//cone7
 	else if(cone == 7){
-		moveStage1WaitUntil(420, 130);
-		moveBothStagesWait(430, 720);
-		moveStage1Wait(340 - 10);
+		moveStage1WaitUntil(440, 130);
+		moveBothStagesWait(450, 685);
+		moveStage1Wait(360 - 10);
 		groundSetUpCone();
 		desiredStage1 = 300;
 		wait1Msec(100);
 	}
 	//cone8
 	else if(cone == 8){
-		moveStage1WaitUntil(600, 400);
-		moveBothStagesWait(640, 500);
-		moveBothStagesWait(440, 690);
-		moveStage1Wait(395 - 5);
+		moveStage1WaitUntil(645, 300);
+		moveBothStagesWait(645, 530);
+		moveBothStagesWait(470, 700);
+		moveStage1Wait(390);
 		groundSetUpCone();
 		desiredStage1 = 360;
 		wait1Msec(100);
@@ -299,36 +300,41 @@ void highStackDetach(int cone){
 }
 
 void getOutOfTheWay(){
-	moveStage1WaitUntil(620, 530);
-	desiredStage2 = 982-318;
+	if(deadband2(SensorValue(stage1Encoder), 620, 100)){
+		desiredStage1 = 620;
+		desiredStage2 = 982-318;
+	}
+	else{
+		moveStage1WaitUntil(620, 530);
+		desiredStage2 = 982-318;
+	}
 }
 
 void getOutOfTheWayMid(){
+	if(deadband2(SensorValue(stage1Encoder), 510, 100)){
+		desiredStage1 = 510;
+		desiredStage2 = 629-318+510;
+	}
 	moveStage1WaitUntil(482, 450);
-	desiredStage2 = 629-318;
+	desiredStage2 = 629-318+510;
 }
 
 void getOutOfTheWayLow(){
-	moveStage1WaitUntil(200, 160);
-	desiredStage2 = -370;
+	moveStage1WaitUntil(220, 160);
+	desiredStage2 = 1080-370;
 }
 
 void unfoldRobot(){
-	moveStage1Wait(200);
+	moveStage1Wait(220);
 	moveStage2Wait(0);
-	groundSetUpConeWait();
+	moveStage1WaitUntil(482, 450);
+	mobileGoal = false;
 }
 
 void unfoldRobotAuton(){
-	moveStage1Wait(200);
-	moveStage2Wait(-310);
-	getOutOfTheWayLow();
-}
-
-void foldUpRobot(){
-	//moveStage1Wait(#);
-	//moveStage2Wait(#);
-	//moveStage1Wait(#);
+	moveStage1Wait(230);
+	moveStage2WaitUntil(-415, -350);
+	//getOutOfTheWayLow();
 }
 
 task coneControl(){
@@ -344,7 +350,6 @@ task coneControl(){
 	intakeLowered = true;
 	bool outMid = false;
 	bool outHigh = false;
-	bool foldUp = false;
 	while(true){
 		if(!highGoal){
 			if(vexRT[Btn8R]){
@@ -453,13 +458,6 @@ task coneControl(){
 					intakeLowered = false;
 				}
 		}
-		if(vexRT[Btn7R] != foldUp){
-				foldUp = !foldUp;
-				if(foldUp){
-					foldUpRobot();
-					intakeLowered = false;
-				}
-		}
 		delay(5);
 	}
 }
@@ -468,7 +466,7 @@ task mobileGoalMotors(){
 	bool accurate = false;
 	bool baccurate = false;
 	bool caccurate = false;
-	bool goalUp = true;
+	mobileGoal = true;
 	while(true){
 		if(mobileTip){
 			if(mobileGoalTip){
@@ -478,7 +476,10 @@ task mobileGoalMotors(){
 					intake(5);
 			}
 			else{
-				intakeSides(12, 38);
+				if(SensorValue(intakeEncoder) < 2950)
+					intakeSides(26, 48);
+				else
+					intake(0);
 			}
 		}
 		else if(mobileUntip){
@@ -488,23 +489,9 @@ task mobileGoalMotors(){
 				intake(5);
 		}
 		else if(!mobileGoal){
-			if(goalUp){
-				if(currentConeStack<5){
-					getOutOfTheWayMid();
-					wait1Msec(400);
-					goalUp = false;
-					intakeLowered = false;
-				}
-				else{
-					getOutOfTheWay();
-					wait1Msec(400);
-					goalUp = false;
-					intakeLowered = false;
-				}
-			}
-			else if(SensorValue(intakeEncoder) < 2200)
+			if(SensorValue(intakeEncoder) < 2200)
 				intake(127);
-			else if(SensorValue(intakeEncoder) < 2950)
+			else if(SensorValue(intakeEncoder) < 2900)
 				intake(30);
 			else
 				intake(5);
@@ -522,7 +509,18 @@ task mobileGoalMotors(){
 				mobileGoal = !mobileGoal;
 				mobileTip = false;
 				mobileGoalTip = false;
-				goalUp = true;
+				if(!mobileGoal){
+					if(currentConeStack<=5){
+						getOutOfTheWayMid();
+						intakeLowered = false;
+					}
+					else{
+						getOutOfTheWay();
+						wait1Msec(200 + 25*currentConeStack);
+						intakeLowered = false;
+					}
+					currentConeStack = 0;
+				}
 			}
 		}
 		if(vexRT[Btn5D] != baccurate){
@@ -545,12 +543,39 @@ task mobileGoalMotors(){
 	}
 }
 
+task mobileGoalAuton(){
+	mobileGoal = true;
+	while(true){
+		if(!mobileGoal){
+			if(SensorValue(intakeEncoder) < 2200)
+				intake(127);
+			else if(SensorValue(intakeEncoder) < 2900)
+				intake(30);
+			else
+				intake(5);
+		}
+		else{
+			if(SensorValue(intakeEncoder) > 1000)
+				intake(-127);
+			else
+				intake(-2);
+		}
+		delay(5);
+	}
+}
+
 void mobileGoalOut(){
-	mobileGoalGeneralLess(127, 2, 2950);
+	mobileGoal = false;
+	while(SensorValue(intakeEncoder) < 2850){
+		wait1Msec(40);
+	}
 }
 
 void mobileGoalIn(){
-	mobileGoalGeneralGreater(-127, -10, 1000);
+	mobileGoal = true;
+	while(SensorValue(intakeEncoder) > 1000){
+		wait1Msec(40);
+	}
 }
 
 task dataLog(){

@@ -1,13 +1,11 @@
-#pragma systemFile
-
-task drivebaseControlGyroSkills(){
+task drivebaseControlGyro(){
 	//desiredDrive = (SensorValue(leftEncoder) + SensorValue(rightEncoder)) / 2;
-	desiredDrive = SensorValue(leftEncoder);
-	float kP = 0.115;
+	desiredDrive = -SensorValue(leftEncoder);
+	float kP = 0.105;
 	float kD = 0.081;
-	float kPt = 0.8201;
+	float kPt = 0.33;
 	float kDt = 0.0;
-	float kPt2 = 0.1114;
+	float kPt2 = 0.13;
 	float kDt2 = 0.58762;
 	float error = 0;
 	float errorT = 0;
@@ -43,71 +41,80 @@ task drivebaseControlGyroSkills(){
 	}
 }
 
-void twentyPointAuton(){
-	mobileGoalOut();
-	wait1Msec(450);
-	driveBothWait(1500);
-	mobileGoalIn();
-	driveBothWait(200);
-	groundSetUpConeWait();
-	groundPickUpConeWait();
-	wait1Msec(450);
-	normalStackCone(1);
-	driveBothWait(200);
-	groundSetUpConeWait();
-	groundPickUpConeWait();
-	wait1Msec(450);
-	normalStackCone(2);
-	driveBothWait(200);
-	groundSetUpConeWait();
-	groundPickUpConeWait();
-	wait1Msec(450);
-	normalStackCone(3);
-	wait1Msec(450);
-	driveBothWait(-1850);
-	wait1Msec(550);
-	turn45DegreesR();
-	wait1Msec(450);
-	driveBothWait(-840);
-	wait1Msec(450);
-	turn90DegreesR();
-	wait1Msec(450);
-	driveBothWaitUntil(1100, 800);
-	mobileGoalOut();
-	wait1Msec(300);
+int stepWait = 120;
+
+void resetGyro10PtBar(){
+	float oldDesiredDrive = desiredDrive;
+	stopTask(drivebaseControlGyro);
+	drive(35, 35);
+	float oldVal = SensorValue(leftEncoder);
+	while(!deadband2(oldVal, SensorValue(leftEncoder), 10)){
+		wait1Msec(60);
+		oldVal = SensorValue(leftEncoder);
+	}
+	wait1Msec(600);
+	SensorValue(Gyro) = 0;
+	desiredTurn = 0;
+	drive(0, 0);
+	startTask(drivebaseControlGyro);
+	desiredDrive = -SensorValue(leftEncoder);
 }
 
-void tenPointAuton(){
-
+void goal1(){
+	mobileGoal = false;
+	wait1Msec(stepWait);
+	driveBothWait(1500);
+	mobileGoalIn();
+	moveStage2WaitUntil(90, 60);
+	wait1Msec(300);
+	getOutOfTheWayLow();
+	driveBothWait(-1300);
+	turn45DegreesR();
+	wait1Msec(stepWait);
+	driveBothWait(-640);
+	wait1Msec(stepWait);
+	turn90DegreesR();
+	wait1Msec(stepWait);
+	driveBothWaitUntil(850, 250);
+	mobileGoal = false;
+	driveBothWait(0);
+	wait1Msec(stepWait+100);
+	mobileGoal = true;
+	driveBothWaitUntil(-1000, -500);
+	mobileGoal = false;
 }
 
 void auton(){
 	resetEncoders();
 	resetLiftEncoders();
+	datalogClear();
+	datalogStart();
+	startTask(dataLog);
 	startTask(drivebaseControlGyro);
+	startTask(mobileGoalAuton);
 	autonRan = true;
 	startTask(stage1Control);
 	startTask(stage2Control);
 	unfoldRobotAuton();
 
-	twentyPointAuton():
-	//tenPointAutuon();
+	goal1();
+
+	datalogStop();
 }
 
 void testPID(){
 	resetEncoders();
 	startTask(drivebaseControlGyro);
-	straight = true;
-	driveBothWait(1700);
-	wait1Msec(2500);
-	straight = false;
+	driveBothWait(1200);
+	wait1Msec(1100);
 	turnWait(1800);
-	wait1Msec(2500);
-	straight = true;
-	driveBothWait(1700);
-	wait1Msec(2500);
-	straight = false;
-	turnWait(3600);
+	wait1Msec(1100);
+	driveBothWait(1200);
+	wait1Msec(1100);
+	turnWait(1800);
+	wait1Msec(1100);
+	driveBothWait(1200);
+	//driveBothWait(100000000);
 }
 
 void testTurn(){

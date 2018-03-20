@@ -78,7 +78,7 @@ void goal1(){
 	turn45DegreesR();
 	driveBothWait(-610);
 	turn90DegreesR();
-	driveBothWaitUntil(810, 640);
+	driveBothWaitUntil(810, 570);
 	mobileGoalOut();
 	wait1Msec(300);
 	//driveBothWait(0);
@@ -90,82 +90,81 @@ void goal2(){
 	mobileGoal = false;
 	driveBothWait(0);
 	turn90DegreesR();
-	driveBothWait(450);
-	turnWait(-830);
-	driveBothWait(860);
+	driveBothWait(425);
+	turnWait(-870);
+	driveBothWait(590);
 	mobileGoalIn();
 	turnWait(1820);
-	driveBothWaitUntil(950, 430);
+	driveBothWaitUntil(655, 440);
 	mobileGoal = false;
 	driveBothWait(0);
 }
 
 void goal3(){
-	wait1Msec(400);
-	driveBothWait(-220);
+	driveBothWait(-260);
 	mobileGoal = true;
 	turn90DegreesR();
-	driveBothWait(310);
+	driveBothWait(360);
 	mobileGoal = false;
-	turnWait(-420);
+	turnWait(-435);
 	wait1Msec(100);
-	driveBothWait(1200);
+	driveBothWait(850);
 	mobileGoalIn();
 	wait1Msec(400);
-	driveBothWait(-1220);
+	driveBothWait(-890);
 	turn45DegreesL();
-	driveBothWait(-670);
+	driveBothWait(-610);
 	turn90DegreesL();
 	mobileGoal = false;
-	driveBothWait(255);
+	driveBothWait(180);
 	resetGyro10PtBar();
 }
 
 void goal4(){
-	driveBothWaitUntil(-285, -140);
+	driveBothWaitUntil(-220, -140);
 	mobileGoal = true;
 	driveBothWait(0);
 	turn90DegreesL();
 	mobileGoal = false;
-	driveBothWait(355);
+	driveBothWait(350);
 	turn90DegreesL();
-	driveBothWait(805);
+	driveBothWait(615);
 	mobileGoalIn();
 	turn180DegreesL();
-	driveBothWaitUntil(900, 460);
+	driveBothWaitUntil(750, 460);
 	mobileGoal = false;
 	driveBothWait(0);
 }
 
 void goal5(){
 	mobileGoal = false;
-	driveBothWait(-650);
+	driveBothWait(-550);
 	turn180DegreesL();
 	turnWait(-15);
-	driveBothWait(1160);
+	driveBothWait(700);
 	mobileGoal = true;
 	wait1Msec(400);
-	driveBothWait(970);
+	driveBothWait(650);
 	turn90DegreesL();
-	driveBothWait(330);
+	driveBothWait(220);
 	turn90DegreesR();
-	driveBothWaitUntil(840, 570);
+	driveBothWaitUntil(700, 480);
 	mobileGoal = false;
 	driveBothWait(0);
 }
 
 void goal6(){
-	driveBothWaitUntil(-780, -300);
+	driveBothWaitUntil(-750, -300);
 	mobileGoal = true;
 	driveBothWait(0);
 	mobileGoal = false;
 	turn90DegreesR();
 	driveBothWait(-320);
 	turn90DegreesR();
-	driveBothWait(775);
+	driveBothWait(500);
 	mobileGoalIn();
 	turn180DegreesL();
-	driveBothWaitUntil(800, 310);
+	driveBothWaitUntil(600, 310);
 	mobileGoal = false;
 	driveBothWait(0);
 	resetGyro10PtBar();
@@ -201,9 +200,9 @@ void endGoal6(){
 	mobileGoal = true;
 	driveBothWait(0);
 	turn90DegreesL();
-	driveBothWait(315);
+	driveBothWait(380);
 	turn45DegreesL();
-	driveBothWait(830);
+	driveBothWait(600);
 }
 
 void endGoal7(){

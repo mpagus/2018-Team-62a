@@ -41,47 +41,161 @@ task drivebaseControlGyro(){
 	}
 }
 
-int stepWait = 120;
+int stepWait = 20;
 
-void resetGyro10PtBar(){
-	float oldDesiredDrive = desiredDrive;
-	stopTask(drivebaseControlGyro);
-	drive(35, 35);
-	float oldVal = SensorValue(leftEncoder);
-	while(!deadband2(oldVal, SensorValue(leftEncoder), 10)){
-		wait1Msec(60);
-		oldVal = SensorValue(leftEncoder);
-	}
-	wait1Msec(600);
-	SensorValue(Gyro) = 0;
-	desiredTurn = 0;
-	drive(0, 0);
-	startTask(drivebaseControlGyro);
-	desiredDrive = -SensorValue(leftEncoder);
-}
-
-void goal1(){
+void threeCones(){
 	mobileGoal = false;
 	wait1Msec(stepWait);
-	driveBothWait(1500);
+	driveBothWait(1390);
 	mobileGoalIn();
-	moveStage2WaitUntil(90, 60);
-	wait1Msec(300);
-	getOutOfTheWayLow();
-	driveBothWait(-1300);
+	driveBoth(345);
+	desiredStage2 = 90;
+	wait1Msec(100);
+	groundSetUpConeWait();
+	driveBothWait(0);
+	groundPickUpCone();
+	desiredStage1 = 450;
+	wait1Msec(100);
+	driveBoth(320);
+	moveStage1WaitUntil(435, 405);
+	moveBothStagesWait(465, -160);
+	moveBothStagesWait(215, -215);
+	groundSetUpConeWait();
+	driveBothWait(0);
+	groundPickUpCone();
+	desiredStage1 = 600;
+	wait1Msec(100);
+	driveBoth(-1700);
+	moveStage1WaitUntil(640, 575);
+	moveBothStagesWait(640, -85);
+	moveBothStagesWait(235, -235);
+	groundSetUpConeWait();
+	getOutOfTheWayMid();
+	driveBothWait(0);
 	turn45DegreesR();
 	wait1Msec(stepWait);
-	driveBothWait(-640);
+	driveBothWait(-570);
 	wait1Msec(stepWait);
 	turn90DegreesR();
 	wait1Msec(stepWait);
-	driveBothWaitUntil(850, 250);
+	driveBothWaitUntil(955, 900);
+	mobileGoal = false;
+	driveBothWait(0);
+	wait1Msec(stepWait+600);
+	driveBothWaitUntil(-1000, -250);
+	mobileGoal = true;
+	driveBothWait(200);
+	mobileGoal = false;
+}
+
+void fourCones(){
+	mobileGoal = false;
+	wait1Msec(stepWait);
+	driveBothWait(1390);
+	mobileGoalIn();
+	driveBoth(315);
+	desiredStage2 = 90;
+	wait1Msec(100);
+	groundSetUpConeWait();
+	driveBothWait(0);
+	groundPickUpCone();
+	desiredStage1 = 450;
+	wait1Msec(100);
+	driveBoth(320);
+	moveStage1WaitUntil(435, 405);
+	moveBothStagesWait(465, -160);
+	moveBothStagesWait(215, -215);
+	groundSetUpConeWait();
+	driveBothWait(0);
+	groundPickUpCone();
+	desiredStage1 = 600;
+	wait1Msec(100);
+	driveBoth(305);
+	moveStage1WaitUntil(595, 515);
+	moveBothStagesWait(595, -85);
+	moveBothStagesWait(235, -235);
+	groundSetUpConeWait();
+	driveBothWait(0);
+	groundPickUpCone();
+	driveBoth(-320);
+	groundSetUpConeWait();
+	groundPickUpCone();
+	moveStage1WaitUntil(275, 130);
+	driveBoth(-1870);
+	moveBothStagesWait(287, 755);
+	desiredStage1 = 110;
+	wait1Msec(250);
+	moveStage1Wait(140);
+	groundSetUpCone();
+	desiredStage1 = 120;
+	wait1Msec(200);
+	groundSetUpConeWait();
+	getOutOfTheWayMid();
+	driveBothWait(0);
+	turn45DegreesR();
+	wait1Msec(stepWait);
+	driveBothWait(-650);
+	wait1Msec(stepWait);
+	turn90DegreesR();
+	wait1Msec(stepWait);
+	driveBothWaitUntil(960, 250);
 	mobileGoal = false;
 	driveBothWait(0);
 	wait1Msec(stepWait+100);
 	mobileGoal = true;
 	driveBothWaitUntil(-1000, -500);
 	mobileGoal = false;
+}
+
+void tenZone(){
+	mobileGoal = false;
+	wait1Msec(stepWait);
+	driveBothWait(1390);
+	mobileGoalIn();
+	wait1Msec(150);
+	driveBoth(345);
+	desiredStage2 = 90;
+	wait1Msec(100);
+	groundSetUpConeWait();
+	wait1Msec(150);
+	driveBothWait(0);
+	groundPickUpCone();
+	desiredStage1 = 450;
+	wait1Msec(100);
+	driveBoth(335);
+	moveStage1WaitUntil(435, 405);
+	moveBothStagesWait(465, -160);
+	moveBothStagesWait(215, -215);
+	groundSetUpConeWait();
+	driveBothWait(0);
+	groundPickUpCone();
+	desiredStage1 = 600;
+	wait1Msec(100);
+	driveBoth(-1715);
+	moveStage1WaitUntil(650, 575);
+	moveBothStagesWait(650, -85);
+	moveBothStagesWait(235, -235);
+	groundSetUpConeWait();
+	getOutOfTheWayMid();
+	driveBothWait(0);
+	//turn180DegreesL();
+	turnWait(2070);
+	wait1Msec(stepWait);
+	driveBothWait(470);
+	wait1Msec(stepWait);
+	mobileGoal = false;
+	wait1Msec(stepWait+1000);
+	driveBothWaitUntil(-700, -500);
+	mobileGoal = true;
+	driveBothWait(0);
+	mobileGoal = false;
+}
+
+void goStraight(){
+	stopTask(drivebaseControlGyro);
+	drive(127, 127);
+	wait1Msec(1700);
+	drive(0, 0);
 }
 
 void auton(){
@@ -97,7 +211,9 @@ void auton(){
 	startTask(stage2Control);
 	unfoldRobotAuton();
 
-	goal1();
+	//threeCones();
+	tenZone();
+	//goStraight();
 
 	datalogStop();
 }

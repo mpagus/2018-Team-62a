@@ -103,24 +103,35 @@ void driveBoth(int value){
 	desiredDrive = desiredDrive + value;
 }
 
-void driveBothWaitUntil(int value, int continueValue, int normalContinue = 180, int derivativeContinue = 100, int tickNum = 8){
+void driveBothWaitUntil(int value, int continueValue, int normalContinue = 50){
 	straight = true;
 	slewResetDrive = true;
 	desiredDrive = desiredDrive + value;
-	int ticks = 0;
-	float oldEncoder = SensorValue(leftEncoder);
-	while(ticks<tickNum){
-		if(deadband2(-SensorValue(leftEncoder), desiredDrive - value + continueValue, normalContinue) && deadband2(SensorValue(leftEncoder)-oldEncoder, 0, derivativeContinue))
-			ticks++;
-		else
-			ticks = 0;
-		oldEncoder = SensorValue(leftEncoder);
+	while(!deadband2(-SensorValue(leftEncoder), desiredDrive - value + continueValue, normalContinue)){
 		wait1Msec(20);
 	}
 }
 
-void driveBothWait(int value){
-	driveBothWaitUntil(value, value);
+void driveBothWait(int value, int normalContinue = 25, int derivativeContinue = 5, int tickNum = 5){
+	straight = true;
+	slewResetDrive = true;
+	desiredDrive = desiredDrive + value;
+	int continueValue = value;
+	int ticks = 0;
+	int timeOut = 0;
+	float oldEncoder = SensorValue(leftEncoder);
+	while(ticks<tickNum && timeOut<20){
+		if(deadband2(-SensorValue(leftEncoder), desiredDrive - value + continueValue, normalContinue) && deadband2(SensorValue(leftEncoder)-oldEncoder, 0, derivativeContinue))
+			ticks++;
+		else
+			ticks = 0;
+		if(deadband2(SensorValue(leftEncoder)-oldEncoder, 0, 1))
+			timeOut++;
+		else
+			timeOut = 0;
+		oldEncoder = SensorValue(leftEncoder);
+		wait1Msec(10);
+	}
 }
 
 void turn(int value, int normalContinue = 140, int derivativeContinue = 80){
@@ -132,19 +143,24 @@ void turn(int value, int normalContinue = 140, int derivativeContinue = 80){
 	desiredDrive = -SensorValue(leftEncoder);
 }
 
-void turnWait(int value, int normalContinue = 420, int derivativeContinue = 130, int tickNum = 10){
+void turnWait(int value, int normalContinue = 100, int derivativeContinue = 5, int tickNum = 3){
 	straight = false;
 	slewResetDrive = true;
 	desiredTurn += value;
 	if(desiredTurn >= 3600)
 		desiredTurn = 3600 - desiredTurn;
 	int ticks = 0;
+	int timeticks = 0;
 	float oldGyro = gyroLeftIsPositive()*SensorValue(Gyro);
-	while(ticks<tickNum){
+	while(ticks<tickNum || timeticks<2){
 		if(deadband2(gyroLeftIsPositive()*SensorValue(Gyro), desiredTurn, normalContinue) && deadband2(gyroLeftIsPositive()*SensorValue(Gyro) - oldGyro, 0, derivativeContinue))
 			ticks++;
 		else
 			ticks = 0;
+		if(deadband2(gyroLeftIsPositive()*SensorValue(Gyro) - oldGyro, 0, 4))
+			timeticks++;
+		else
+			timeticks = 0;
 		oldGyro = gyroLeftIsPositive()*SensorValue(Gyro);
 		wait1Msec(20);
 	}
@@ -181,12 +197,23 @@ void turn45DegreesR(){
 	straight = true;
 }
 
-void calibrateGyros(){
+/**void calibrateGyros(){
 	SensorType[Gyro] = sensorNone;
 	wait1Msec(250);
 	SensorType[Gyro] = sensorGyro;
 	wait1Msec(2000);
 	SensorScale[Gyro] = 139.8888;
+}*/
+
+void calibrateGyros(){
+	SensorType[Gyro] = sensorNone;
+	SensorType[GyroBottom] = sensorNone;
+	wait1Msec(250);
+	SensorType[Gyro] = sensorGyro;
+	SensorType[GyroBottom] = sensorGyro;
+	wait1Msec(2000);
+	SensorScale[Gyro] = 145.3865;//137.7346
+	SensorScale[GyroBottom] = 139.8888;
 }
 
 //arm movement
@@ -205,12 +232,15 @@ void moveSingleStageWaitUntil(tSensors sensor, float continueValue, int normalCo
 
 void moveSingleStageWait(tSensors sensor, float continueValue, int normalContinue, int derivativeContinue, int tickNum = 20){
 	int ticks = 0;
+	int timeOut = 0;
 	float oldEncoder = SensorValue(sensor);
-	while(ticks<tickNum){
+	while(ticks<tickNum && timeOut<100){
 		if(deadband2(SensorValue(sensor), continueValue, normalContinue) && deadband2(SensorValue(sensor)-oldEncoder, 0, derivativeContinue))
 			ticks++;
 		else
 			ticks = 0;
+		if(deadband2(SensorValue(sensor)-oldEncoder, 0, 30))
+			timeOut++;
 		oldEncoder = SensorValue(sensor);
 		wait1Msec(5);
 	}
@@ -218,13 +248,16 @@ void moveSingleStageWait(tSensors sensor, float continueValue, int normalContinu
 
 void moveDoubleStageWait(tSensors sensor1, float desiredValue1, int normalContinue1, int derivativeContinue1, tSensors sensor2, float desiredValue2, int normalContinue2, int derivativeContinue2, int tickNum = 10){
 	int ticks = 0;
+	int timeOut = 0;
 	float oldEncoder1 = SensorValue(sensor1);
 	float oldEncoder2 = SensorValue(sensor2);
-	while(ticks<tickNum){
+	while(ticks<tickNum  && timeOut<100){
 		if(deadband2(SensorValue(sensor1), desiredValue1, normalContinue1) && deadband2(SensorValue(sensor1)-oldEncoder1, 0, derivativeContinue1) && deadband2(SensorValue(sensor2), desiredValue2, normalContinue2) && deadband2(SensorValue(sensor2)-oldEncoder2, 0, derivativeContinue2))
 			ticks++;
 		else
 			ticks = 0;
+		if(deadband2(SensorValue(sensor1)-oldEncoder1, 0, 30) && deadband2(SensorValue(sensor2)-oldEncoder2, 0, 30))
+			timeOut++;
 		oldEncoder1 = SensorValue(sensor1);
 		oldEncoder2 = SensorValue(sensor2);
 		wait1Msec(5);

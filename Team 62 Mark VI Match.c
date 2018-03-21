@@ -41,11 +41,8 @@ task drivebaseControlGyro(){
 	}
 }
 
-int stepWait = 20;
-
 void threeCones(){
 	mobileGoal = false;
-	wait1Msec(stepWait);
 	driveBothWait(1390);
 	mobileGoalIn();
 	driveBoth(345);
@@ -73,15 +70,12 @@ void threeCones(){
 	getOutOfTheWayMid();
 	driveBothWait(0);
 	turn45DegreesR();
-	wait1Msec(stepWait);
 	driveBothWait(-570);
-	wait1Msec(stepWait);
 	turn90DegreesR();
-	wait1Msec(stepWait);
 	driveBothWaitUntil(955, 900);
 	mobileGoal = false;
 	driveBothWait(0);
-	wait1Msec(stepWait+600);
+	wait1Msec(600);
 	driveBothWaitUntil(-1000, -250);
 	mobileGoal = true;
 	driveBothWait(200);
@@ -90,7 +84,6 @@ void threeCones(){
 
 void fourCones(){
 	mobileGoal = false;
-	wait1Msec(stepWait);
 	driveBothWait(1390);
 	mobileGoalIn();
 	driveBoth(315);
@@ -133,15 +126,12 @@ void fourCones(){
 	getOutOfTheWayMid();
 	driveBothWait(0);
 	turn45DegreesR();
-	wait1Msec(stepWait);
 	driveBothWait(-650);
-	wait1Msec(stepWait);
 	turn90DegreesR();
-	wait1Msec(stepWait);
 	driveBothWaitUntil(960, 250);
 	mobileGoal = false;
 	driveBothWait(0);
-	wait1Msec(stepWait+100);
+	wait1Msec(200);
 	mobileGoal = true;
 	driveBothWaitUntil(-1000, -500);
 	mobileGoal = false;
@@ -149,7 +139,6 @@ void fourCones(){
 
 void tenZone(){
 	mobileGoal = false;
-	wait1Msec(stepWait);
 	driveBothWait(1390);
 	mobileGoalIn();
 	wait1Msec(150);
@@ -180,11 +169,9 @@ void tenZone(){
 	driveBothWait(0);
 	//turn180DegreesL();
 	turnWait(2070);
-	wait1Msec(stepWait);
 	driveBothWait(470);
-	wait1Msec(stepWait);
 	mobileGoal = false;
-	wait1Msec(stepWait+1000);
+	wait1Msec(1000);
 	driveBothWaitUntil(-700, -500);
 	mobileGoal = true;
 	driveBothWait(0);
@@ -209,6 +196,7 @@ void auton(){
 	autonRan = true;
 	startTask(stage1Control);
 	startTask(stage2Control);
+	startTask(stallCheck);
 	unfoldRobotAuton();
 
 	//threeCones();

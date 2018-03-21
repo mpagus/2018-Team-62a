@@ -222,8 +222,8 @@ void normalStackCone(int cone){
 	//cone3
 	else if(cone == 3){
 		moveStage2WaitUntil(90, 60);
-		moveStage1WaitUntil(640, 515);
-		moveBothStagesWait(640, -85);
+		moveStage1WaitUntil(625, 515);
+		moveBothStagesWait(625, -85);
 		moveBothStagesWait(235, -235);
 	}
 	//cone4
@@ -516,15 +516,15 @@ task mobileGoalMotors(){
 				intake(5);
 		}
 		else if(!mobileGoal){
-			if(SensorValue(intakeEncoder) < 2440)
+			if(SensorValue(intakeEncoder) < 2100)
 				intake(127);
-			else if(SensorValue(intakeEncoder) < 2560)
+			else if(SensorValue(intakeEncoder) < 2300)
 				intake(30);
 			else
 				intake(5);
 		}
 		else{
-			if(SensorValue(intakeEncoder) > 700)
+			if(SensorValue(intakeEncoder) > 640)
 				intake(-127);
 			else
 				intake(-2);

@@ -90,12 +90,12 @@ void goal2(){
 	mobileGoal = false;
 	driveBothWait(0);
 	turn90DegreesR();
-	driveBothWait(450);
+	driveBothWait(475);
 	turnWait(-830);
-	driveBothWait(860);
+	driveBothWait(770);
 	mobileGoalIn();
 	turnWait(1820);
-	driveBothWaitUntil(950, 430);
+	driveBothWaitUntil(870, 430);
 	mobileGoal = false;
 	driveBothWait(0);
 }
@@ -107,27 +107,27 @@ void goal3(){
 	turn90DegreesR();
 	driveBothWait(310);
 	mobileGoal = false;
-	turnWait(-420);
+	turnWait(-400);
 	wait1Msec(100);
-	driveBothWait(1200);
+	driveBothWait(1090);
 	mobileGoalIn();
 	wait1Msec(400);
-	driveBothWait(-1220);
+	driveBothWait(-1110);
 	turn45DegreesL();
-	driveBothWait(-670);
+	driveBothWait(-790);
 	turn90DegreesL();
 	mobileGoal = false;
-	driveBothWait(255);
+	driveBothWait(180);
 	resetGyro10PtBar();
 }
 
 void goal4(){
-	driveBothWaitUntil(-285, -140);
+	driveBothWaitUntil(-220, -140);
 	mobileGoal = true;
 	driveBothWait(0);
 	turn90DegreesL();
 	mobileGoal = false;
-	driveBothWait(355);
+	driveBothWait(362);
 	turn90DegreesL();
 	driveBothWait(805);
 	mobileGoalIn();
@@ -145,27 +145,27 @@ void goal5(){
 	driveBothWait(1160);
 	mobileGoal = true;
 	wait1Msec(400);
-	driveBothWait(970);
+	driveBothWait(850);
 	turn90DegreesL();
-	driveBothWait(330);
+	driveBothWait(270);
 	turn90DegreesR();
-	driveBothWaitUntil(840, 570);
+	driveBothWaitUntil(830, 570);
 	mobileGoal = false;
 	driveBothWait(0);
 }
 
 void goal6(){
-	driveBothWaitUntil(-780, -300);
+	driveBothWaitUntil(-750, -300);
 	mobileGoal = true;
 	driveBothWait(0);
 	mobileGoal = false;
 	turn90DegreesR();
 	driveBothWait(-320);
 	turn90DegreesR();
-	driveBothWait(775);
+	driveBothWait(500);
 	mobileGoalIn();
 	turn180DegreesL();
-	driveBothWaitUntil(800, 310);
+	driveBothWaitUntil(600, 310);
 	mobileGoal = false;
 	driveBothWait(0);
 	resetGyro10PtBar();
@@ -201,9 +201,9 @@ void endGoal6(){
 	mobileGoal = true;
 	driveBothWait(0);
 	turn90DegreesL();
-	driveBothWait(315);
+	driveBothWait(380);
 	turn45DegreesL();
-	driveBothWait(830);
+	driveBothWait(600);
 }
 
 void endGoal7(){

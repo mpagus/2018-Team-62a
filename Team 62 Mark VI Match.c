@@ -17,7 +17,7 @@ task drivebaseControlGyro(){
 	float oldT = 0;
 	int slewVal = 15;
 	while(true){
-		errorT = desiredTurn - gyroLeftIsPositive()*SensorValue(Gyro);
+		errorT = desiredTurn - SensorValue(Gyro);
 		derivativeT = errorT - oldT;
 		oldT = errorT;
 		if(slewResetDrive){
@@ -207,7 +207,6 @@ void auton(){
 }
 
 void testPID(){
-	resetEncoders();
 	startTask(drivebaseControlGyro);
 	driveBothWait(1200);
 	wait1Msec(1100);
@@ -218,12 +217,10 @@ void testPID(){
 	turnWait(1800);
 	wait1Msec(1100);
 	driveBothWait(1200);
-	//driveBothWait(100000000);
 }
 
 void testTurn(){
 	startTask(drivebaseControlGyro);
-	resetEncoders();
 	turn90DegreesR();
 	wait1Msec(1000);
 	turn90DegreesL();

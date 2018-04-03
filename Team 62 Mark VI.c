@@ -146,12 +146,12 @@ task stallCheck(){
 		oldEncoderStage1 = SensorValue(stage1Encoder);
 		oldEncoderStage2 = SensorValue(stage2Encoder);
 		if(stage1Tick>30){
-			stopTask(stage1Contol);
+			stopTask(stage1Control);
 			wait1Msec(100);
 			startTask(stage1Control);
 		}
 		if(stage2Tick>30){
-			stopTask(stage2Contol);
+			stopTask(stage2Control);
 			wait1Msec(100);
 			startTask(stage2Control);
 		}

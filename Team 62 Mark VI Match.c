@@ -196,7 +196,7 @@ void auton(){
 	autonRan = true;
 	startTask(stage1Control);
 	startTask(stage2Control);
-	startTask(stallCheck);
+	//startTask(stallCheck);
 	unfoldRobotAuton();
 
 	//threeCones();

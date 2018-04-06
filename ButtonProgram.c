@@ -1,6 +1,8 @@
+#pragma config(I2C_Usage, I2C1, i2cSensors)
+#pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Motor,  port1,           motor1,        tmotorVex393_HBridge, openLoop)
 #pragma config(Motor,  port2,           motor2,        tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port3,           motor3,        tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port3,           motor3,        tmotorVex393_MC29, openLoop, reversed, encoderPort, I2C_1)
 #pragma config(Motor,  port4,           motor4,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port5,           motor5,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port6,           motor6,        tmotorVex393_MC29, openLoop)
@@ -13,15 +15,15 @@
 task main()
 {
 	while(true){
-		motor[motor1]=127 * vexRT[Btn7U];  //leftDrive1
-		motor[motor2]=127 * vexRT[Btn7L];  //rightDrive1 R
-		motor[motor3]=127 * vexRT[Btn7D];  //leftDrive1
+		motor[motor1]=127 * vexRT[Btn7U];  //stage1 R
+		motor[motor2]=127 * vexRT[Btn7L];  //intakeR
+		motor[motor3]=127 * vexRT[Btn7D];  //intakeL R
 		motor[motor4]=127 * vexRT[Btn7R];  //rightDrive2 R
-		motor[motor5]=127 * vexRT[Btn8U];  //rightDrive3 R
-		motor[motor6]=127 * vexRT[Btn8L];  //stage2
-		motor[motor7]=127 * vexRT[Btn8D];  //Stage1 R
-		motor[motor8]=127 * vexRT[Btn8R];  //intakeL R
-		motor[motor9]=127 * vexRT[Btn6U];  //intakeR
-		motor[motor10]=127 * vexRT[Btn6D]; //leftDrive2 R
+		motor[motor5]=127 * vexRT[Btn8U];  //leftDrive2
+		motor[motor6]=127 * vexRT[Btn8L];  //leftDrive1
+		motor[motor7]=127 * vexRT[Btn8D];  //rightDrive1 R
+		motor[motor8]=127 * vexRT[Btn8R];  //rightDrive3 R
+		motor[motor9]=127 * vexRT[Btn6U];  //leftDrive3
+		motor[motor10]=127 * vexRT[Btn6D]; //stage2
 	}
 }

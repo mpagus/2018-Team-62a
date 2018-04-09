@@ -86,10 +86,6 @@ void driveBothWaitUntil(int value, int continueValue, int normalContinue = 180, 
 	}
 }*/
 
-void resetDesired(){
-	desiredDrive = SensorValue(leftEncoder);
-}
-
 void resetEncoders(){
 	desiredDrive = 0;
 	SensorValue(leftEncoder) = 0;
@@ -257,4 +253,19 @@ void moveDoubleStageWait(tSensors sensor1, float desiredValue1, int normalContin
 		oldEncoder2 = SensorValue(sensor2);
 		wait1Msec(5);
 	}
+}
+
+//LCD
+const short leftButtonLCD = 1;
+const short centerButtonLCD = 2;
+const short rightButtonLCD = 4;
+
+void waitForPressLCD()
+{
+	while(nLCDButtons == 0){wait1Msec(5);}
+}
+
+void waitForReleaseLCD()
+{
+	while(nLCDButtons != 0){wait1Msec(5);}
 }

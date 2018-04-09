@@ -50,8 +50,6 @@ float batteryPower; //battery power uopdated in DataLog task always running in t
 bool mobileGoal = true;
 float desiredStage1 = 0;
 float desiredStage2 = 0;
-bool stage1Reset = false;
-bool stage2Reset = false;
 float stage2Scalar = 0;
 int currentConeStack = 0;
 int currentHighConeStack = 0;
@@ -61,6 +59,7 @@ bool mobileUntip = false;
 bool mobileGoalTip = false;
 bool intakeLowered = true;
 bool letIntakeGo = false;
+int autonNumber = 0;
 
 //Used to assign motor powers to intake
 void intake(int val){
@@ -97,28 +96,26 @@ void resetLiftEncoders(){
 
 //Stage 1 pid control
 task stage1Control(){
-	float old = SensorValue(stage1Encoder);
 	desiredStage1 = SensorValue(stage1Encoder);
+	float old = SensorValue(stage1Encoder);
 	float kP1 = 2.6;
 	float kI1 = 0.02;
-	float kD1 = 10;
+	float kD1 = 0;
 	float error = 0;
 	float integral = 0;
 	float derivative = 0;
+	long oldTime = 0;
 	while(true){
 		error = desiredStage1 - SensorValue(stage1Encoder);
-		integral = integral + error;
-		if(deadband(error, 0, 5) || stage1Reset){ //Resets the integral (used each time the desired value is changed)
-			integral = 0;
-			stage1Reset = false;
-		}
-		if(abs(error)>40){
+		integral = integral + (error*(nPgmTime-oldTime));
+		derivative = (error - old)/(nPgmTime-oldTime);
+		if(deadband(error, 0, 5) || abs(error)>40){
 			integral = 0;
 		}
-		derivative = error - old;
+		oldTime = nPgmTime;
 		old = error;
 		towerStage1(limit(error * kP1 + integral * kI1 + derivative * kD1, -100, 100));
-		delay(5);
+		delay(20);
 	}
 }
 
@@ -130,25 +127,23 @@ task stage2Control(){
 	desiredStage2 = (SensorValue(stage2Encoder) - stage2Scalar);
 	float old = SensorValue(stage2Encoder);
 	float kP2 = 1.7;
-	float kI2 = 0.07;
-	float kD2 = 15;
+	float kI2 = 0.012;
+	float kD2 = 0;
 	float error = 0;
-	float derivative = 0;
 	float integral = 0;
+	float derivative = 0;
+	long oldTime = nPgmTime;
 	while(true){
 		error = (desiredStage2+numRevolutions*ticksPerRevolution) - (SensorValue(stage2Encoder) - stage2Scalar);
-		derivative = error - old;
+		integral = integral + (error*(nPgmTime-oldTime));
+		derivative = (error - old)/(nPgmTime-oldTime);
+		if(abs(error)<10 || abs(error)>80){
+			integral = 0;
+		}
+		oldTime = nPgmTime;
 		old = error;
-		integral = integral + error;
-		if(abs(error)<10 || stage2Reset){ //Resets the integral (used each time the desired value is changed)
-			integral = 0;
-			stage2Reset = false;
-		}
-		if(abs(error)>80){
-			integral = 0;
-		}
 		towerStage2(limit(error*kP2 + derivative*kD2 + integral*kI2, -100, 100));
-		delay(5);
+		delay(20);
 	}
 }
 
@@ -188,7 +183,6 @@ task stage2Control(){
 //The first number is the error continue
 void moveStage1WaitUntil(float desiredValue, float continueValue){
 	desiredStage1 = desiredValue;
-	stage1Reset = true;
 	moveSingleStageWaitUntil(stage1Encoder, continueValue, 20);
 }
 
@@ -198,7 +192,6 @@ void moveStage1WaitUntil(float desiredValue, float continueValue){
 //The third number is the amount of 20 second clicks to move on
 void moveStage1Wait(float desiredValue){
 	desiredStage1 = desiredValue;
-	stage1Reset = true;
 	moveSingleStageWait(stage1Encoder, desiredValue, 20, 5, 7);
 }
 
@@ -206,7 +199,6 @@ void moveStage1Wait(float desiredValue){
 //The first number is the error continue
 void moveStage2WaitUntil(float desiredValue, float continueValue){
 	desiredStage2 = desiredValue;
-	stage2Reset = true;
 	//moveSingleStageWaitUntil(stage2Encoder, continueValue, 50);
 	moveSingleStageWaitUntil(stage2Encoder, continueValue+numRevolutions*ticksPerRevolution + stage2Scalar, 20);
 }
@@ -217,7 +209,6 @@ void moveStage2WaitUntil(float desiredValue, float continueValue){
 //The third number is the amount of 20 second clicks to move on
 void moveStage2Wait(float desiredValue){
 	desiredStage2 = desiredValue;
-	stage2Reset = true;
 	//moveSingleStageWait(stage2Encoder, desiredValue, 50, 50);
 	moveSingleStageWait(stage2Encoder, desiredValue+numRevolutions*ticksPerRevolution + stage2Scalar, 20, 5, 7);
 }
@@ -229,8 +220,6 @@ void moveStage2Wait(float desiredValue){
 void moveBothStagesWait(float desiredValue1, float desiredValue2){
 	desiredStage1 = desiredValue1;
 	desiredStage2 = desiredValue2;
-	stage1Reset = true;
-	stage2Reset = true;
 	//moveDoubleStageWait(stage1Encoder, desiredValue1, 60, 60, stage2Encoder, desiredValue2,  60, 60);
 	moveDoubleStageWait(stage1Encoder, desiredValue1, 20, 5, stage2Encoder, desiredValue2+numRevolutions*ticksPerRevolution + stage2Scalar, 20, 5, 7);
 }
@@ -242,7 +231,6 @@ void stage2RevolutionNoWait(){
 
 //Makes a revolution of stage 2 (waits for it to be completed)
 void stage2Revolution(){
-	stage2Reset = true;
 	numRevolutions = numRevolutions+1;
 	moveSingleStageWait(stage1Encoder, desiredStage2+numRevolutions*ticksPerRevolution - stage2Scalar, 20, 20, 6);
 }
@@ -503,8 +491,6 @@ task coneControl(){
 						currentConeStack++;
 						normalStackCone(currentConeStack);
 						groundSetUpCone();
-						stage1Reset = true;
-						stage2Reset = true;
 						intakeLowered = true;
 					}
 					while(vexRT[Btn6U]){
@@ -514,8 +500,6 @@ task coneControl(){
 							currentConeStack++;
 							normalStackCone(currentConeStack);
 							groundSetUpCone();
-							stage1Reset = true;
-							stage2Reset = true;
 							intakeLowered = true;
 						}
 					}
@@ -545,8 +529,6 @@ task coneControl(){
 						currentConeStack++;
 						normalStackCone(currentConeStack, true);
 						preloadSetUpCone();
-						stage1Reset = true;
-						stage2Reset = true;
 						intakeLowered = true;
 					}
 				}
@@ -778,14 +760,15 @@ task dataLog(){
 #include "Team 62 Mark VI Match.c"
 
 //This runs at the beginning of each reboot and calibrates the gyro. Keep the robot still for 2 seconds to calibrate.
-//void pre_auton() {calibrateGyros();}
-void pre_auton(){}
+void pre_auton() {
+	calibrateGyros();
+}
 
 //This takes from Match for get the auton function which takes one of the possible autons.
 //The testPID() is the only test you need that goes back and forth to test straight and turning pid.
 task autonomous(){
 	startTask(dataLog);
-	auton();
+	auton(autonNumber);
 	//testPID();
 	//testTurn();
 }

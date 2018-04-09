@@ -24,6 +24,22 @@ int max(int num1, int num2) {
 		return num2;
 }
 
+float fabs(float num){
+	if(num>0)
+		return num;
+	else
+		return -1.0*num;
+}
+
+float fsgn(int num){
+	if(x == 0)
+		return 0;
+    if(x > 0)
+    	return 1; 
+    else
+    	return (-1);
+}
+
 bool deadband(int val, int target, int db = 10){
 	return val > target + db || val < target - db;
 }

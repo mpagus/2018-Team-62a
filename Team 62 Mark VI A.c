@@ -48,8 +48,14 @@
 
 float batteryPower; //battery power uopdated in DataLog task always running in the background
 bool mobileGoal = true;
-float desiredStage1 = 0;
-float desiredStage2 = 0;
+float startStage1 = 0;
+float startStage2 = 0;
+float endStage1 = 0;
+float endStage2 = 0;
+float velocitySlope = 0;
+float maxVelocity = 0;
+float rampTime = 0;
+float steadyTime = 0;
 int currentConeStack = 0;
 int currentHighConeStack = 0;
 bool autonRan = false;
@@ -285,6 +291,16 @@ float motionPIDGraphStage1(long time){
 			return 0*time;
 		}
 	}
+	else if(followPath == 100){ //Choose Your Path_1
+		if(time<rampTime)
+			return 0;
+		else if(time<rampTime+steadyTime)
+			return 0;
+		else if(time<rampTime+rampTime+steadyTime)
+			return 0;
+		else
+			return endStage1;
+	}
 	return SensorValue(stage1Encoder);
 }
 
@@ -436,9 +452,23 @@ float motionPIDGraphStage2(long time){
 	return SensorValue(stage2Encoder);
 }
 
-void moveArm(int path, bool outOfWay = false){
+void moveToPosition(float _startStage1, float _startStage2, float _endStage1, float _endStage2, float _velocitySlope, float _maxVelocity){
+	startStage1 = _startStage1;
+	startStage2 = _startStage2
+	endStage1 = _endStage1;
+	endStage2 = _endStage2;
+	velocitySlope = _velocitySlope;
+	maxVelocity = _maxVelocity;
+	followPath = 100;
+	completed = false;
+	start = true;
+	while(!completed){
+		wait1Msec(75);
+	}
+}
+
+void moveArm(int path){
 	followPath = path;
-	outOfTheWay = outOfWay;
 	completed = false;
 	start = true;
 	while(!completed){

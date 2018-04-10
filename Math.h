@@ -32,10 +32,10 @@ float fabs(float num){
 }
 
 float fsgn(int num){
-	if(x == 0)
+	if(num == 0)
 		return 0;
-    if(x > 0)
-    	return 1; 
+    if(num > 0)
+    	return 1;
     else
     	return (-1);
 }

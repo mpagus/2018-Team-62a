@@ -2,11 +2,11 @@ task drivebaseControlGyro(){
 	//desiredDrive = (SensorValue(leftEncoder) + SensorValue(rightEncoder)) / 2;
 	desiredDrive = -SensorValue(leftEncoder);
 	float kP = 0.105;
-	float kD = 0.081;
+	float kD = 0.021;
 	float kPt = 0.33;
 	float kDt = 0.0;
 	float kPt2 = 0.13;
-	float kDt2 = 0.58762;
+	float kDt2 = 0.147;
 	float error = 0;
 	float errorT = 0;
 	float derivative = 0;
@@ -37,7 +37,7 @@ task drivebaseControlGyro(){
 			turnSpeed = limit(kPt*errorT + kDt*derivativeT, -1.75*abs(driveSpeed), 1.75*abs(driveSpeed));
 			drive(driveSpeed + turnSpeed, driveSpeed - turnSpeed);
 		}
-		delay(5);
+		delay(20);
 	}
 }
 
@@ -185,7 +185,7 @@ void goStraight(){
 	drive(0, 0);
 }
 
-void auton(){
+void auton(int autonNumber){
 	resetEncoders();
 	resetLiftEncoders();
 	datalogClear();
@@ -199,6 +199,7 @@ void auton(){
 	//startTask(stallCheck);
 	unfoldRobotAuton();
 
+	if(autonNumber==)
 	//threeCones();
 	tenZone();
 	//goStraight();

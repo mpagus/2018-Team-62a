@@ -27,7 +27,7 @@ void driveDeadband(int rVal, int lVal, int db = 10){
 task driveControl(){
 	while(true){
 		driveDeadband(vexRT[Ch2], vexRT[Ch3], 10);
-		delay(5);
+		delay(15);
 	}
 }
 

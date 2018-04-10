@@ -18,6 +18,11 @@
 
 float batteryPower;
 
+int followPath = 0;
+bool completed = false;
+bool outOfTheWay = false;
+bool start = false;
+
 void towerStage1(int val){
 	motor[stage1] = val;
 }
@@ -26,63 +31,388 @@ void resetLiftEncoders(){
 	SensorValue(stage1Encoder) = 0;
 }
 
-int followPath = 0;
-
-float motionPIDGraph(long time){
-	if(followPath==0){
+float motionPIDGraphStage1(long time){
+	if(followPath == 0){ //Unfold Robot
 		if(time<1000)
-			return -time*time/600 + 1.7*time;
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
 	}
-	else if(followPath==1){
+	else if(followPath == 1){ //PickUpCone
 		if(time<1000)
-			return -time*time/600 + 1.7*time;
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
 	}
-	return 0;
+	else if(followPath == 2){ //SetUpCone
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 3){ //Cone1
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 4){ //Cone2
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 5){ //Cone3
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 6){ //Cone4
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 7){ //Cone5
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 8){ //Cone6
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 9){ //Cone7
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 10){ //Cone8
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 11 && outOfTheWay){ //Cone9 Only Out Of The Way
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0;
+		}
+	}
+	return SensorValue(stage1Encoder);
 }
 
-int windowSize = 20;
-float kP_p1 = 1.2;
-float kI_p1 = 0.005;
-float kD_p1 = 4;
-float kVFF_p1 = 0;
-float kP_v1 = 2.6;
-float kD_v1 = 10;
-long startTime = nPgmTime-10;
+float motionPIDGraphStage2(long time){
+	if(followPath == 0){ //Unfold Robot
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 1){ //PickUpCone
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 2){ //SetUpCone
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 3){ //Cone1
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 4){ //Cone2
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 5){ //Cone3
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 6){ //Cone4
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 7){ //Cone5
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 8){ //Cone6
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 9){ //Cone7
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 10){ //Cone8
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else if(outOfTheWay){
+			completed = true;
+			return 0;
+		}
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0*time;
+		}
+	}
+	else if(followPath == 11 && outOfTheWay){ //Cone9 Only Out Of The Way
+		if(time<1000)
+			return 0*time;
+		else if(time<1000)
+			return 0*time;
+		else{
+			completed = true;
+			return 0;
+		}
+	}
+	return SensorValue(stage2Encoder);
+}
 
-bool start = false;
+void moveArm(int path, bool outOfWay = false){
+	followPath = path;
+	outOfTheWay = outOfWay;
+	completed = false;
+	while(!completed){
+		wait1Msec(75);
+	}
+}
+
 task motionPID(){
-	float error_p1 = 0;
-	float integral_p1 = 0;
-	float derivative_p1 = 0;
-	float old_p1 = 0;
+	int windowSize = 20;
+	float kP1 = 1.2;
+	float kI1 = 0.005;
+	float kD1 = 4;
+	float error1 = 0;
+	float integral1 = 0;
+	float derivative1 = 0;
+	float old1 = 0;
 	int windowSize = 0;
-	float expectedVelocity = 0;
-	float velocity = 0;
-	float error_v1 = 0;
-	float derivative_v1 = 0;
-	float old_v1 = 0;
-	float drive_v1 = 0;
+	long startTime = nPgmTime-10;
 	long oldTime = nPgmTime-5;
 	while(true){
-		velocity = (error_p1 - old_p1)/(nPgmTime-oldTime);
 		if(start){
 			startTime = nPgmTime;
 			start = false;
 		}
-		error_p1 = motionPIDGraph(nPgmTime-startTime+windowSize) - SensorValue(stage1Encoder);
-		integral_p1 = integral_p1 + error_p1*(nPgmTime-oldTime);
-		derivative_p1 = (error_p1 - old_p1)/(nPgmTime-oldTime);
-		if(abs(error_p1)<1 || abs(error_p1)>100){
-			integral_p1 = 0;
+		error1 = motionPIDGraph(nPgmTime-startTime+windowSize) - SensorValue(stage1Encoder);
+		integral1 = integral1 + error1*(nPgmTime-oldTime);
+		derivative1 = (error1 - old1)/(nPgmTime-oldTime);
+		if(abs(error1)<1 || abs(error1)>100){
+			integral1 = 0;
 		}
-		old_p1 = error_p1;
-		expectedVelocity = limit(error_p1 * kP_p1 + integral_p1 * kI_p1 + derivative_p1 * kD_p1 + kVFF_p1 * velocity, -127, 127);
-		/**error_v1 = motionPIDGraph(nPgmTime-startTime) - SensorValue(stage1Encoder);
-		derivative_v1 = (error_v1 - old_v1)/(nPgmTime-oldTime);
-		old_v1 = error_v1;
-		drive_v1 = drive_v1 + error_p1 * kP_v1 + derivative_p1 * kD_v1;
-		towerStage1(drive_v1);*/
-		towerStage1(expectedVelocity);
+		old1 = error1;
+		towerStage1(limit(error1 * kP1 + integral1 * kI1 + derivative1 * kD1, -127, 127));
 		oldTime = nPgmTime;
 		delay(20);
 	}
@@ -97,7 +427,7 @@ task dataLog(){
 		datalogAddValueWithTimeStamp(2, SensorValue(stage1Encoder));
 		datalogAddValueWithTimeStamp(3, motor[stage1]);
 		batteryPower = nImmediateBatteryLevel;
-		wait1Msec(10);
+		wait1Msec(50);
 	}
 }
 

@@ -65,7 +65,9 @@ bool mobileGoalTip = false;
 bool intakeLowered = true;
 bool letIntakeGo = false;
 int autonNumber = 0;
+int followPath = 0;
 bool start = false;
+bool completed = false;
 
 //Used to assign motor powers to intake
 void intake(int val){
@@ -100,53 +102,7 @@ void resetLiftEncoders(){
 	SensorValue(stage2Encoder) = 0;
 }
 
-task motionPID(){
-	int windowSize = 20;
-	float kP1 = 1.2;
-	float kI1 = 0.005;
-	float kD1 = 4;
-	float error1 = 0;
-	float integral1 = 0;
-	float derivative1 = 0;
-	float old1 = 0;
-	float kP2 = 1.2;
-	float kI2 = 0.005;
-	float kD2 = 4;
-	float error2 = 0;
-	float integral2 = 0;
-	float derivative2 = 0;
-	float old2 = 0;
-	long startTime = nPgmTime-10;
-	long oldTime = nPgmTime-5;
-	while(true){
-		if(start){
-			startTime = nPgmTime;
-			start = false;
-		}
-		error1 = motionPIDGraph(nPgmTime-startTime+windowSize) - SensorValue(stage1Encoder);
-		integral1 = integral1 + error1*(nPgmTime-oldTime);
-		derivative1 = (error1 - old1)/(nPgmTime-oldTime);
-		if(abs(error1)<1 || abs(error1)>100){
-			integral1 = 0;
-		}
-		old1 = error1;
-		towerStage1(limit(error1 * kP1 + integral1 * kI1 + derivative1 * kD1, -127, 127));
-
-		error2 = motionPIDGraph(nPgmTime-startTime+windowSize) - SensorValue(stage2Encoder);
-		integral2 = integral2 + error1*(nPgmTime-oldTime);
-		derivative2 = (error2 - old2)/(nPgmTime-oldTime);
-		if(abs(error2)<1 || abs(error2)>100){
-			integral2 = 0;
-		}
-		old2 = error2;
-		towerStage2(limit(error2 * kP1 + integral2 * kI1 + derivative2 * kD1, -127, 127));
-		
-		oldTime = nPgmTime;
-		delay(20);
-	}
-}
-
-float motionPIDGraphStage1(long time){
+float motionPIDGraphStage1(float time){
 	if(followPath == -1){ //Unfold Robot Auton_2
 		if(time<1000)
 			return 0*time;
@@ -160,15 +116,11 @@ float motionPIDGraphStage1(long time){
 		}
 	}
 	else if(followPath == 0){ //Unfold Robot_1
-		if(time<1000)
-			return 0*time;
-		else if(time<1000)
-			return 0*time;
-		else if(time<1000)
-			return 0*time;
+		if(time<760)
+			return polynom(time,0,0.404,0.0016,sciN(-2,-6),0,0,0);
 		else{
 			completed = true;
-			return 0*time;
+			return 268;
 		}
 	}
 	else if(followPath == 1){ //PickUpCone_1
@@ -196,15 +148,11 @@ float motionPIDGraphStage1(long time){
 		}
 	}
 	else if(followPath == 3){ //Cone1_1
-		if(time<1000)
-			return 0*time;
-		else if(time<1000)
-			return 0*time;
-		else if(time<1000)
-			return 0*time;
+		if(time<1950)
+			return polynom(time,sciN(2.480,2),sciN(2.958,-1),sciN(-8.441,-4),sciN(-9.652,-7),sciN(2.291,-9),sciN(-1.252,-12),sciN(2.175,-16));
 		else{
 			completed = true;
-			return 0*time;
+			return 268;
 		}
 	}
 	else if(followPath == 4){ //Cone2_1
@@ -304,7 +252,7 @@ float motionPIDGraphStage1(long time){
 	return SensorValue(stage1Encoder);
 }
 
-float motionPIDGraphStage2(long time){
+float motionPIDGraphStage2(float time){
 	if(followPath == -1){ //Unfold Robot Auton_2
 		if(time<1000)
 			return 0*time;
@@ -318,15 +266,11 @@ float motionPIDGraphStage2(long time){
 		}
 	}
 	else if(followPath == 0){ //Unfold Robot_2
-		if(time<1000)
-			return 0*time;
-		else if(time<1000)
-			return 0*time;
-		else if(time<1000)
-			return 0*time;
+		if(time<750)
+			return polynom(time,0,0.9382,-0.009,sciN(4,-5),sciN(-6,-8),sciN(3,-11),0);
 		else{
 			completed = true;
-			return 0*time;
+			return 634;
 		}
 	}
 	else if(followPath == 1){ //PickUpCone_2
@@ -342,27 +286,19 @@ float motionPIDGraphStage2(long time){
 		}
 	}
 	else if(followPath == 2){ //SetUpCone_2
-		if(time<1000)
-			return 0*time;
-		else if(time<1000)
-			return 0*time;
-		else if(time<1000)
-			return 0*time;
+		if(time<1950)
+			return 0;
 		else{
 			completed = true;
-			return 0*time;
+			return 0;
 		}
 	}
 	else if(followPath == 3){ //Cone1_2
-		if(time<1000)
-			return 0*time;
-		else if(time<1000)
-			return 0*time;
-		else if(time<1000)
-			return 0*time;
+		if(time<1950)
+			return polynom(time,sciN(6.350,2),sciN(1.811,-1),sciN(-2.586,-3),sciN(7.276,-6),sciN(-7.613,-9),sciN(3.426,-12),sciN(-5.628,-16));
 		else{
 			completed = true;
-			return 0*time;
+			return 634;
 		}
 	}
 	else if(followPath == 4){ //Cone2_2
@@ -426,7 +362,7 @@ float motionPIDGraphStage2(long time){
 		}
 	}
 	else if(followPath == 9){ //Cone7_2
-		if(else if(time<1000)
+		if(time<1000)
 			return 0*time;
 		else if(time<1000)
 			return 0*time;
@@ -452,9 +388,55 @@ float motionPIDGraphStage2(long time){
 	return SensorValue(stage2Encoder);
 }
 
+long startTime = nPgmTime-10;
+task motionPID(){
+	int windowSize = 20;
+	float kP1 = 0.9;
+	float kI1 = 0.0005;
+	float kD1 = 40;
+	float error1 = 0;
+	float integral1 = 0;
+	float derivative1 = 0;
+	float old1 = 0;
+	float kP2 = 0.4;
+	float kI2 = 0.0001;
+	float kD2 = 20;
+	float error2 = 0;
+	float integral2 = 0;
+	float derivative2 = 0;
+	float old2 = 0;
+	long oldTime = nPgmTime-5;
+	while(true){
+		if(start){
+			startTime = nPgmTime;
+			start = false;
+		}
+		error1 = motionPIDGraphStage1(nPgmTime-startTime+windowSize) - SensorValue(stage1Encoder);
+		integral1 = integral1 + error1*(nPgmTime-oldTime);
+		derivative1 = (error1 - old1)/(nPgmTime-oldTime);
+		if(abs(error1)<1 || abs(error1)>100){
+			integral1 = 0;
+		}
+		old1 = error1;
+		towerStage1(limit(error1 * kP1 + integral1 * kI1 + derivative1 * kD1, -127, 127));
+
+		error2 = motionPIDGraphStage2(nPgmTime-startTime+windowSize) - SensorValue(stage2Encoder);
+		integral2 = integral2 + error1*(nPgmTime-oldTime);
+		derivative2 = (error2 - old2)/(nPgmTime-oldTime);
+		if(abs(error2)<1 || abs(error2)>100){
+			integral2 = 0;
+		}
+		old2 = error2;
+		towerStage2(limit(error2 * kP2 + integral2 * kI2 + derivative2 * kD2, -127, 127));
+
+		oldTime = nPgmTime;
+		delay(20);
+	}
+}
+
 void moveToPosition(float _startStage1, float _startStage2, float _endStage1, float _endStage2, float _velocitySlope, float _maxVelocity){
 	startStage1 = _startStage1;
-	startStage2 = _startStage2
+	startStage2 = _startStage2;
 	endStage1 = _endStage1;
 	endStage2 = _endStage2;
 	velocitySlope = _velocitySlope;
@@ -779,7 +761,7 @@ task dataLog(){
 
 //This runs at the beginning of each reboot and calibrates the gyro. Keep the robot still for 2 seconds to calibrate.
 void pre_auton() {
-	calibrateGyros();
+	//calibrateGyros();
 }
 
 //This takes from Match for get the auton function which takes one of the possible autons.
@@ -815,9 +797,15 @@ task usercontrol(){
 		getOutOfTheWayMid();
 	}*/
 	resetLiftEncoders();
-	nMotorEncoder[intakeL]=0;
+	//nMotorEncoder[intakeL]=0;
 	startTask(dataLog);
-	startTask(coneControl);
-	startTask(driveControl);
-	startTask(mobileGoalMotors);
+	//startTask(coneControl);
+	//startTask(driveControl);
+	//startTask(mobileGoalMotors);
+	//followPath = -1;
+	//startTask(motionPID);
+	//wait1Msec(100);
+	//moveArm(0);
+	//wait1Msec(1000);
+	//moveArm(3);
 }

@@ -199,9 +199,9 @@ void auton(int autonNumber){
 	//startTask(stallCheck);
 	unfoldRobotAuton();
 
-	if(autonNumber==)
+	//if(autonNumber==)
 	//threeCones();
-	tenZone();
+	//tenZone();
 	//goStraight();
 
 	datalogStop();

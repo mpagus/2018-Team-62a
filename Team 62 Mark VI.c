@@ -94,13 +94,14 @@ void resetLiftEncoders(){
 	SensorValue(stage2Encoder) = 0;
 }
 
+float kP1 = 1.60;
+float kI1 = 0.005;
+float kD1 = 140;
+
 //Stage 1 pid control
 task stage1Control(){
 	desiredStage1 = SensorValue(stage1Encoder);
 	float old = SensorValue(stage1Encoder);
-	float kP1 = 2.6;
-	float kI1 = 0.02;
-	float kD1 = 0;
 	float error = 0;
 	float integral = 0;
 	float derivative = 0;
@@ -109,30 +110,30 @@ task stage1Control(){
 		error = desiredStage1 - SensorValue(stage1Encoder);
 		integral = integral + (error*(nPgmTime-oldTime));
 		derivative = (error - old)/(nPgmTime-oldTime);
-		if(deadband(error, 0, 5) || abs(error)>40){
+		if(abs(error)<3 || abs(error)>100){
 			integral = 0;
 		}
 		oldTime = nPgmTime;
 		old = error;
 		towerStage1(limit(error * kP1 + integral * kI1 + derivative * kD1, -100, 100));
-		delay(20);
+		delay(25);
 	}
 }
 
 int numRevolutions = 0;
-int ticksPerRevolution = 1080; //Make sure this is correct. It is used for revolutions
+int ticksPerRevolution = 1800; //Make sure this is correct. It is used for revolutions
 
+float kP2 = 0.43;
+float kI2 = 0.003;
+float kD2 = 4;
 //Stage 2 pid control
 task stage2Control(){
 	desiredStage2 = (SensorValue(stage2Encoder) - stage2Scalar);
 	float old = SensorValue(stage2Encoder);
-	float kP2 = 1.7;
-	float kI2 = 0.012;
-	float kD2 = 0;
 	float error = 0;
 	float integral = 0;
 	float derivative = 0;
-	long oldTime = nPgmTime;
+	long oldTime = nPgmTime-10;
 	while(true){
 		error = (desiredStage2+numRevolutions*ticksPerRevolution) - (SensorValue(stage2Encoder) - stage2Scalar);
 		integral = integral + (error*(nPgmTime-oldTime));
@@ -192,7 +193,7 @@ void moveStage1WaitUntil(float desiredValue, float continueValue){
 //The third number is the amount of 20 second clicks to move on
 void moveStage1Wait(float desiredValue){
 	desiredStage1 = desiredValue;
-	moveSingleStageWait(stage1Encoder, desiredValue, 20, 5, 7);
+	moveSingleStageWait(stage1Encoder, desiredValue, 20, 5, 3);
 }
 
 //Moves stage 2 to a desired value and cuts out when it hits the contiunue value
@@ -210,7 +211,7 @@ void moveStage2WaitUntil(float desiredValue, float continueValue){
 void moveStage2Wait(float desiredValue){
 	desiredStage2 = desiredValue;
 	//moveSingleStageWait(stage2Encoder, desiredValue, 50, 50);
-	moveSingleStageWait(stage2Encoder, desiredValue+numRevolutions*ticksPerRevolution + stage2Scalar, 20, 5, 7);
+	moveSingleStageWait(stage2Encoder, desiredValue+numRevolutions*ticksPerRevolution + stage2Scalar, 20, 5, 3);
 }
 
 //Moves both stages to desired values and waits for completion
@@ -221,7 +222,7 @@ void moveBothStagesWait(float desiredValue1, float desiredValue2){
 	desiredStage1 = desiredValue1;
 	desiredStage2 = desiredValue2;
 	//moveDoubleStageWait(stage1Encoder, desiredValue1, 60, 60, stage2Encoder, desiredValue2,  60, 60);
-	moveDoubleStageWait(stage1Encoder, desiredValue1, 20, 5, stage2Encoder, desiredValue2+numRevolutions*ticksPerRevolution + stage2Scalar, 20, 5, 7);
+	moveDoubleStageWait(stage1Encoder, desiredValue1, 20, 5, stage2Encoder, desiredValue2+numRevolutions*ticksPerRevolution + stage2Scalar, 20, 5, 3);
 }
 
 //Makes a revolution of stage 2
@@ -238,25 +239,25 @@ void stage2Revolution(){
 //Picks up normal cone (with jab)
 void groundPickUpCone(){
 	//desiredStage1 = -20;
-	desiredStage1 = 20;
-	desiredStage2 = 90;
+	desiredStage1 = 5;
+	desiredStage2 = 125;
 	wait1Msec(320);
 }
 
 //Picks up normal cone (waits to reach value)
 void groundPickUpConeWait(){
-	moveBothStagesWait(20, 90);
+	moveBothStagesWait(5, 125);
 }
 
 //Hovers above normal cone
 void groundSetUpCone(){
 	desiredStage1 = 234;
-	desiredStage2 = 49;
+	desiredStage2 = 60;
 }
 
 //Hovers above normal cone (waits to reach value)
 void groundSetUpConeWait(){
-	moveBothStagesWait(234, 49);
+	moveBothStagesWait(234, 60);
 }
 
 //Picks up preload
@@ -282,31 +283,40 @@ void preloadSetUpCone(){
 void normalStackCone(int cone, bool preload = false){
 	//cone1
 	if(cone == 1){
-		moveStage2WaitUntil(120, 100);
-		moveStage1WaitUntil(445, 345);
-		moveBothStagesWait(445, -40);
-		moveBothStagesWait(215, -80);
+		//moveStage1WaitUntil(405, 345);
+		//moveBothStagesWait(405, -270);
+		//moveBothStagesWait(190, -350);
+		moveStage1WaitUntil(380, 280);
+		desiredStage2 = -385;
+		moveStage1Wait(380);
+		moveBothStagesWait(200, -385);
 	}
 	//cone2
 	else if(cone == 2){
-		moveStage2WaitUntil(120, 100);
-		moveStage1WaitUntil(575, 435);
-		moveBothStagesWait(575, 40);
-		moveBothStagesWait(295, -15);
+		//moveStage1WaitUntil(520, 435);
+		//moveBothStagesWait(520, -200);
+		//moveBothStagesWait(285, -310);
+		moveStage1WaitUntil(480, 400);
+		desiredStage2 = -350;
+		moveStage1Wait(480);
+		moveBothStagesWait(280, -350);
 	}
 	//cone3
 	else if(cone == 3){
-		moveStage2WaitUntil(120, 100);
-		moveStage1WaitUntil(640, 505);
-		desiredStage1 = 695;
-		wait1Msec(120);
-		moveStage2Wait(60);
-		moveBothStagesWait(400, -120);
+		//moveStage1WaitUntil(640, 505);
+		//desiredStage1 = 695;
+		//wait1Msec(50);
+		//moveStage2Wait(-10);
+		//moveBothStagesWait(400, -200);
+		moveStage1WaitUntil(690, 570);
+		desiredStage2 = -290;
+		wait1Msec(60);
+		moveBothStagesWait(410, -290);
 	}
 	//cone4
 	else if(cone == 4){
 		moveStage1WaitUntil(290, 150);
-		moveBothStagesWait(285, 710);
+		moveBothStagesWait(285, 1180);
 		desiredStage1 = 60;
 		wait1Msec(120);
 		groundSetUpCone();
@@ -316,7 +326,7 @@ void normalStackCone(int cone, bool preload = false){
 	//cone5
 	else if(cone == 5){
 		moveStage1WaitUntil(375, 130);
-		moveBothStagesWait(370, 740);
+		moveBothStagesWait(370, 1235);
 		desiredStage1 = 130;
 		wait1Msec(120);
 		groundSetUpCone();
@@ -326,7 +336,7 @@ void normalStackCone(int cone, bool preload = false){
 	//cone6
 	else if(cone == 6){
 		moveStage1WaitUntil(435, 130);
-		moveBothStagesWait(430, 705);
+		moveBothStagesWait(430, 1175);
 		desiredStage1 = 190;
 		wait1Msec(200);
 		groundSetUpCone();
@@ -336,7 +346,7 @@ void normalStackCone(int cone, bool preload = false){
 	//cone7
 	else if(cone == 7){
 		moveStage1WaitUntil(490, 130);
-		moveBothStagesWait(485, 685);
+		moveBothStagesWait(485, 1141);
 		desiredStage1 = 245;
 		wait1Msec(170);
 		groundSetUpCone();
@@ -346,8 +356,8 @@ void normalStackCone(int cone, bool preload = false){
 	//cone8
 	else if(cone == 8){
 		moveStage1WaitUntil(615, 300);
-		moveBothStagesWait(615, 570);
-		moveBothStagesWait(445, 640);
+		moveBothStagesWait(615, 950);
+		moveBothStagesWait(445, 1067);
 		desiredStage1 = 350;
 		wait1Msec(140);
 		groundSetUpCone();
@@ -494,14 +504,16 @@ task coneControl(){
 						intakeLowered = true;
 					}
 					while(vexRT[Btn6U]){
-						if(SensorValue(ultrasonthicccccccc)<62){
-							groundPickUpCone();
+						if(SensorValue(ultrasonthicccccccc)<62 && SensorValue(ultrasonthicccccccc)>30){
 							wait1Msec(100);
+							groundPickUpConeWait();
+							wait1Msec(50);
 							currentConeStack++;
 							normalStackCone(currentConeStack);
 							groundSetUpCone();
 							intakeLowered = true;
 						}
+						wait1Msec(50);
 					}
 				}
 			}
@@ -761,7 +773,7 @@ task dataLog(){
 
 //This runs at the beginning of each reboot and calibrates the gyro. Keep the robot still for 2 seconds to calibrate.
 void pre_auton() {
-	calibrateGyros();
+	//calibrateGyros();
 }
 
 //This takes from Match for get the auton function which takes one of the possible autons.
@@ -801,8 +813,8 @@ task usercontrol(){
 	startTask(dataLog);
 	SensorValue(stage1Encoder)=0;
 	startTask(coneControl);
-	startTask(driveControl);
-	startTask(mobileGoalMotors);
+	//startTask(driveControl);
+	//startTask(mobileGoalMotors);
 	while(true){
 		if(vexRT[Btn8R]){
 			SensorValue(stage2Encoder)=0;
@@ -814,15 +826,15 @@ task usercontrol(){
 			wait1Msec(200);
 		}
 		if(vexRT[Btn8R]){
-			desiredStage2=270;
+			desiredStage2=450;
 			wait1Msec(200);
 		}
 		if(vexRT[Btn8D]){
-			desiredStage2=540;
+			desiredStage2=900;
 			wait1Msec(200);
 		}
 		if(vexRT[Btn8L]){
-			desiredStage2=810;
+			desiredStage2=1350;
 			wait1Msec(200);
 		}
 		if(vexRT[Btn7U]){
@@ -838,7 +850,7 @@ task usercontrol(){
 			wait1Msec(200);
 		}
 		if(vexRT[Btn7L]){
-			desiredStage1=550;
+			desiredStage1=100;
 			wait1Msec(200);
 		}*/
 	}

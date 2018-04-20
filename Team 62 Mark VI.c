@@ -606,7 +606,7 @@ task mobileGoalMotors(){
 	bool caccurate = false;
 	mobileGoal = true;
 	int outCount = 0;
-	int inCount = 111;
+	int inCount = 116;
 	int integral = 0;
 	while(true){
 		//Tipping mode
@@ -753,6 +753,7 @@ task dataLog(){
 		datalogAddValueWithTimeStamp(6, -desiredDrive);
 		datalogAddValueWithTimeStamp(7, desiredTurn);
 		batteryPower = nImmediateBatteryLevel;
+    wait1Msec(75);
 	}
 }
 
@@ -762,12 +763,14 @@ task dataLog(){
 //This runs at the beginning of each reboot and calibrates the gyro. Keep the robot still for 2 seconds to calibrate.
 void pre_auton() {
 	calibrateGyros();
+  startTask(LCDTask);
 }
 
 //This takes from Match for get the auton function which takes one of the possible autons.
 //The testPID() is the only test you need that goes back and forth to test straight and turning pid.
 task autonomous(){
 	startTask(dataLog);
+  startTask(LCDTask);
 	auton(autonNumber);
 	//testPID();
 	//testTurn();
@@ -799,6 +802,7 @@ task usercontrol(){
 	resetLiftEncoders();
 	nMotorEncoder[intakeL]=0;
 	startTask(dataLog);
+  startTask(LCDTask);
 	SensorValue(stage1Encoder)=0;
 	startTask(coneControl);
 	startTask(driveControl);

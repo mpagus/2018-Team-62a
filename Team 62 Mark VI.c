@@ -1,11 +1,10 @@
 #pragma config(I2C_Usage, I2C1, i2cSensors)
-#pragma config(Sensor, in1,    Gyro,           sensorGyro)
+#pragma config(Sensor, in3,    Gyro,           sensorGyro)
 #pragma config(Sensor, dgtl1,  leftEncoder,    sensorQuadEncoder)
+#pragma config(Sensor, dgtl3,  coneButtonSensor, sensorTouch)
 #pragma config(Sensor, dgtl5,  stage2Encoder,  sensorQuadEncoder)
 #pragma config(Sensor, dgtl7,  mobileGoalButton, sensorTouch)
 #pragma config(Sensor, dgtl8,  stage1Encoder,  sensorQuadEncoder)
-#pragma config(Sensor, dgtl10, ultrasonthicccccccc, sensorSONAR_mm)
-#pragma config(Sensor, dgtl12, coneButton,     sensorTouch)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Motor,  port1,           stage1,        tmotorVex393HighSpeed_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           intakeR,       tmotorVex393HighSpeed_MC29, openLoop)
@@ -50,7 +49,7 @@ float batteryPower; //battery power uopdated in DataLog task always running in t
 bool mobileGoal = true;
 float desiredStage1 = 0;
 float desiredStage2 = 0;
-float stage2Scalar = 0;
+float stage2Scalar = 599;
 int currentConeStack = 0;
 int currentHighConeStack = 0;
 bool autonRan = false;
@@ -123,7 +122,7 @@ task stage1Control(){
 int numRevolutions = 0;
 int ticksPerRevolution = 1800; //Make sure this is correct. It is used for revolutions
 
-float kP2 = 0.43;
+float kP2 = 0.35;
 float kI2 = 0.003;
 float kD2 = 4;
 //Stage 2 pid control
@@ -238,26 +237,26 @@ void stage2Revolution(){
 
 //Picks up normal cone (with jab)
 void groundPickUpCone(){
-	//desiredStage1 = -20;
-	desiredStage1 = 5;
-	desiredStage2 = 125;
-	wait1Msec(320);
+	moveStage1Wait(-15);
 }
 
 //Picks up normal cone (waits to reach value)
 void groundPickUpConeWait(){
-	moveBothStagesWait(5, 125);
+	moveStage1Wait(-15);
+	wait1Msec(120);
+	desiredStage1 = SensorValue(stage1Encoder)+7;
+	desiredStage2 = SensorValue(stage2Encoder)-stage2Scalar+10;
 }
 
 //Hovers above normal cone
 void groundSetUpCone(){
-	desiredStage1 = 234;
-	desiredStage2 = 60;
+	desiredStage1 = 190;
+	desiredStage2 = 40;
 }
 
 //Hovers above normal cone (waits to reach value)
 void groundSetUpConeWait(){
-	moveBothStagesWait(234, 60);
+	moveBothStagesWait(190, 40);
 }
 
 //Picks up preload
@@ -287,19 +286,19 @@ void normalStackCone(int cone, bool preload = false){
 		//moveBothStagesWait(405, -270);
 		//moveBothStagesWait(190, -350);
 		moveStage1WaitUntil(380, 280);
-		desiredStage2 = -385;
+		desiredStage2 = -400;
 		moveStage1Wait(380);
-		moveBothStagesWait(200, -385);
+		moveBothStagesWait(155, -400);
 	}
 	//cone2
 	else if(cone == 2){
 		//moveStage1WaitUntil(520, 435);
 		//moveBothStagesWait(520, -200);
 		//moveBothStagesWait(285, -310);
-		moveStage1WaitUntil(480, 400);
-		desiredStage2 = -350;
-		moveStage1Wait(480);
-		moveBothStagesWait(280, -350);
+		moveStage1WaitUntil(470, 400);
+		desiredStage2 = -365;
+		moveStage1Wait(470);
+		moveBothStagesWait(250, -365);
 	}
 	//cone3
 	else if(cone == 3){
@@ -308,60 +307,59 @@ void normalStackCone(int cone, bool preload = false){
 		//wait1Msec(50);
 		//moveStage2Wait(-10);
 		//moveBothStagesWait(400, -200);
-		moveStage1WaitUntil(690, 570);
-		desiredStage2 = -290;
-		wait1Msec(60);
-		moveBothStagesWait(410, -290);
+		moveStage1WaitUntil(690, 630);
+		desiredStage2 = -260;
+		moveBothStagesWait(365, -260);
 	}
 	//cone4
 	else if(cone == 4){
-		moveStage1WaitUntil(290, 150);
-		moveBothStagesWait(285, 1180);
-		desiredStage1 = 60;
-		wait1Msec(120);
+		moveStage1WaitUntil(265, 150);
+		moveBothStagesWait(260, 1250);
+		desiredStage1 = 0;
+		wait1Msec(190);
 		groundSetUpCone();
-		desiredStage1 = 110;
+		desiredStage1 = 50;
 		wait1Msec(200);
 	}
 	//cone5
 	else if(cone == 5){
-		moveStage1WaitUntil(375, 130);
-		moveBothStagesWait(370, 1235);
-		desiredStage1 = 130;
-		wait1Msec(120);
+		moveStage1WaitUntil(330, 130);
+		moveBothStagesWait(325, 1235);
+		desiredStage1 = 80;
+		wait1Msec(190);
 		groundSetUpCone();
-		desiredStage1 = 180;
+		desiredStage1 = 130;
 		wait1Msec(200);
 	}
 	//cone6
 	else if(cone == 6){
-		moveStage1WaitUntil(435, 130);
-		moveBothStagesWait(430, 1175);
-		desiredStage1 = 190;
-		wait1Msec(200);
+		moveStage1WaitUntil(370, 130);
+		moveBothStagesWait(365, 1175);
+		desiredStage1 = 140;
+		wait1Msec(190);
 		groundSetUpCone();
-		desiredStage1 = 240;
+		desiredStage1 = 190;
 		wait1Msec(200);
 	}
 	//cone7
 	else if(cone == 7){
-		moveStage1WaitUntil(490, 130);
-		moveBothStagesWait(485, 1141);
-		desiredStage1 = 245;
-		wait1Msec(170);
+		moveStage1WaitUntil(450, 130);
+		moveBothStagesWait(445, 1120);
+		desiredStage1 = 215;
+		wait1Msec(150);
 		groundSetUpCone();
-		desiredStage1 = 300;
+		desiredStage1 = 265;
 		wait1Msec(100);
 	}
 	//cone8
 	else if(cone == 8){
 		moveStage1WaitUntil(615, 300);
-		moveBothStagesWait(615, 950);
-		moveBothStagesWait(445, 1067);
-		desiredStage1 = 350;
-		wait1Msec(140);
+		moveBothStagesWait(615, 935);
+		moveBothStagesWait(445, 1058);
+		desiredStage1 = 300;
+		wait1Msec(100);
 		groundSetUpCone();
-		desiredStage1 = 400;
+		desiredStage1 = 350;
 		wait1Msec(100);
 	}
 }
@@ -423,46 +421,39 @@ void highStackDetach(int cone){
 
 //Low get out of the way for 5+ cones
 void getOutOfTheWay(){
-	if(deadband2(SensorValue(stage1Encoder), 620, 100)){
-		desiredStage1 = 620;
-		desiredStage2 = 982-stage2Scalar;
-	}
-	else{
-		moveStage1WaitUntil(620, 530);
-		desiredStage2 = 982-stage2Scalar;
-	}
+	desiredStage1 = 610;
+	desiredStage2 = 980;
 }
 
 //Low get out of the way for 1-4 cones
 void getOutOfTheWayMid(){
-	if(deadband2(SensorValue(stage1Encoder), 510, 100)){
-		desiredStage1 = 510;
-		desiredStage2 = 629-stage2Scalar+510;
-	}
-	else{
-		moveStage1WaitUntil(482, 450);
-		desiredStage2 = 629-stage2Scalar+510;
-	}
+	desiredStage1 = 360;
+	desiredStage2 = 1300;
 }
 
 //Low get out of the way for no cones (only in auton)
-void getOutOfTheWayLow(){
-	moveStage1WaitUntil(220, 160);
-	desiredStage2 = 1080-370;
+void getOutOfTheWayLow(int until = 110){
+	if(SensorValue(stage1Encoder)>170)
+		desiredStage2 = -450;
+	else{
+		moveStage1WaitUntil(170, until);
+		desiredStage2 = -450;
+	}
 }
 
 //Unfolds the robot for driver control
 void unfoldRobot(){
 	moveStage1Wait(220);
 	moveStage2Wait(0);
-	moveStage1WaitUntil(482, 450);
-	mobileGoal = false;
+	groundSetUpConeWait();
+	//moveStage1WaitUntil(482, 450);
+	//mobileGoal = false;
 }
 
 //Unfolds the robot during atuonomous
 void unfoldRobotAuton(){
-	moveStage1Wait(230);
-	moveStage2WaitUntil(-415, -350);
+	moveStage1Wait(220);
+	getOutOfTheWayLow();
 }
 
 task coneControl(){
@@ -476,6 +467,7 @@ task coneControl(){
 	intakeLowered = true;
 	bool outHigh = false;
 	bool aAccurate = false;
+	bool bAccurate = false;
 	while(true){
 		if(!vexRT[Btn7U] && !vexRT[Btn7L]){ //Normal mode
 			if(vexRT[Btn8R]){ //Reset cone height
@@ -496,7 +488,11 @@ task coneControl(){
 			if(vexRT[Btn6U] != pickUpCone){ //Pick up cone
 				pickUpCone = !pickUpCone;
 				if(pickUpCone){
-					wait1Msec(300);
+					int timeOut = 0;
+					while(vexRT[Btn6U] && timeOut<10){
+						timeOut++;
+						wait1Msec(10);
+					}
 					if(!vexRT[Btn6U] && currentConeStack < 8){
 						currentConeStack++;
 						normalStackCone(currentConeStack);
@@ -504,21 +500,36 @@ task coneControl(){
 						intakeLowered = true;
 					}
 					while(vexRT[Btn6U]){
-						if(SensorValue(ultrasonthicccccccc)<62 && SensorValue(ultrasonthicccccccc)>30){
-							wait1Msec(100);
-							groundPickUpConeWait();
+						if(SensorValue(coneButtonSensor)){
+							wait1Msec(30);
+							groundPickUpCone();
 							wait1Msec(50);
 							currentConeStack++;
 							normalStackCone(currentConeStack);
 							groundSetUpCone();
 							intakeLowered = true;
 						}
+						if(vexRT[Btn8R]){ //Reset cone height
+							currentConeStack = 0;
+						}
+						if(vexRT[Btn8D] != messUpButton){ //Decrease cone height
+							messUpButton = !messUpButton;
+							if(messUpButton && currentConeStack > 0){
+								currentConeStack--;
+							}
+						}
+						if(vexRT[Btn8U] != incButton){ //Increase cone height
+							incButton = !incButton;
+							if(incButton && currentConeStack < 7){
+								currentConeStack++;
+							}
+						}
 						wait1Msec(50);
 					}
 				}
 			}
 		}
-		if(vexRT[Btn7U]){ //Preload mode
+		/**if(vexRT[Btn7U]){ //Preload mode
 			if(vexRT[Btn8R]){ //Reset cone height
 				currentConeStack = 0;
 			}
@@ -577,16 +588,16 @@ task coneControl(){
 					}
 				}
 			}
-		}
+		}*/
 		if(vexRT[Btn6D] != coneButton){ //Toggle between above cone and at cone height for pickup
 				coneButton = !coneButton;
 				if(coneButton){
 					if(intakeLowered){
-						groundPickUpCone();
+						groundPickUpConeWait();
 						intakeLowered = false;
 					}
 					else{
-						groundSetUpCone();
+						groundSetUpConeWait();
 						intakeLowered = true;
 					}
 				}
@@ -598,9 +609,18 @@ task coneControl(){
 				intakeLowered = false;
 			}
 		}
-		if(vexRT[Btn5U] != aAccurate && vexRT[Btn5D] != aAccurate){ //creates the lock to pause this task while the mobile goal moves (no multi-threading errors)
+		if(vexRT[Btn5U] != aAccurate){ //creates the lock to pause this task while the mobile goal moves (no multi-threading errors)
 			aAccurate = !aAccurate;
 			if(aAccurate){
+				letIntakeGo = true;
+				while(letIntakeGo){
+					delay(50);
+				}
+			}
+		}
+		if(vexRT[Btn5D] != bAccurate){
+			bAccurate = !bAccurate;
+			if(bAccurate){
 				letIntakeGo = true;
 				while(letIntakeGo){
 					delay(50);
@@ -624,8 +644,8 @@ task mobileGoalMotors(){
 		//Tipping mode
 		if(mobileTip){
 			if(mobileGoalTip){
-				integral+=310-nMotorEncoder[intakeL];
-				intake(0.85*(310-nMotorEncoder[intakeL])+0.001*integral); //general pid to get it to the pre-tip value
+				integral+=320-nMotorEncoder[intakeL];
+				intake(0.85*(320-nMotorEncoder[intakeL])+0.001*integral); //general pid to get it to the pre-tip value
 				if(SensorValue(mobileGoalButton)){
 					mobileGoalTip = false;
 					integral=0;
@@ -637,24 +657,42 @@ task mobileGoalMotors(){
 		}
 		//Untipping mode
 		else if(mobileUntip){
-			integral+=310-nMotorEncoder[intakeL];
-			intake(0.85*(310-nMotorEncoder[intakeL])+0.001*integral); //general pid to keep it at the untip value
+			integral+=350-nMotorEncoder[intakeL];
+			intake(0.85*(350-nMotorEncoder[intakeL])+0.001*integral); //general pid to keep it at the untip value
 		}
 		//Mobile goal out
 		else if(!mobileGoal){
-			if(outCount<100){
-				intake(127);
-				outCount++;
-			}
-			else if(outCount<130){
-				intake(30);
-				outCount++;
+			if(currentConeStack<3){
+				if(outCount<110){
+					intake(127);
+					outCount++;
+				}
+				else if(outCount<140){
+					intake(60);
+					outCount++;
+				}
+				else{
+					if(vexRT[Ch2] > 5 || vexRT[Ch3] > 5)
+						intake(19);
+					else
+						intake(0);
+				}
 			}
 			else{
-				if(vexRT[Ch2] > 5 || vexRT[Ch3] > 5)
-					intake(19);
-				else
-					intake(0);
+				if(outCount<80){
+					intake(127);
+					outCount++;
+				}
+				else if(outCount<140){
+					intake(40);
+					outCount++;
+				}
+				else{
+					if(vexRT[Ch2] > 5 || vexRT[Ch3] > 5)
+						intake(19);
+					else
+						intake(0);
+				}
 			}
 		}
 		//Mobile goal in
@@ -674,27 +712,33 @@ task mobileGoalMotors(){
 		if(vexRT[Btn5U] != accurate){
 			accurate = !accurate;
 			if(accurate){
-				//while(!letIntakeGo){
-					//wait1Msec(15); //This is essentially a lock that waits for the cone control method to pause for the mobile goal to move (it pritects against multi-threading errors)
-				//}
+				while(!letIntakeGo){
+					wait1Msec(15); //This is essentially a lock that waits for the cone control method to pause for the mobile goal to move (it pritects against multi-threading errors)
+				}
 				mobileGoal = !mobileGoal;
 				inCount = 0;
 				outCount = 0;
 				mobileTip = false;
 				mobileGoalTip = false;
-				/**if(!mobileGoal){
+				if(!mobileGoal){
 					//This moves the arm out of the way to different locations based on the cone stack (If the arm moves out)
-					if(currentConeStack<=5){
+					if(currentConeStack<=0){
+						getOutOfTheWayLow(80);
+						wait1Msec(40);
+						intakeLowered = false;
+					}
+					else if(currentConeStack<=4){
 						getOutOfTheWayMid();
+						wait1Msec(80+40*currentConeStack);
 						intakeLowered = false;
 					}
 					else{
 						getOutOfTheWay();
-						wait1Msec(200 + 25*currentConeStack);
+						wait1Msec(80 + 40*currentConeStack);
 						intakeLowered = false;
 					}
 					currentConeStack = 0;
-				}*/
+				}
 				letIntakeGo = false;
 			}
 		}
@@ -702,10 +746,10 @@ task mobileGoalMotors(){
 		if(vexRT[Btn5D] != baccurate){
 			baccurate = !baccurate;
 			if(baccurate){
-				integral=0;
+				integral = 0;
 				mobileTip = true;
-				mobileGoalTip = true;
-				mobileGoal = true;
+				mobileGoalTip = !mobileGoalTip;
+				mobileGoal = false;
 				mobileUntip = false;
 			}
 		}
@@ -714,6 +758,7 @@ task mobileGoalMotors(){
 			caccurate = !caccurate;
 			if(caccurate){
 				integral = 0;
+				mobileGoal = false;
 				mobileUntip = true;
 				mobileTip = false;
 			}
@@ -772,9 +817,8 @@ task dataLog(){
 #include "Team 62 Mark VI Match.c"
 
 //This runs at the beginning of each reboot and calibrates the gyro. Keep the robot still for 2 seconds to calibrate.
-void pre_auton() {
-	//calibrateGyros();
-}
+//void pre_auton() {calibrateGyros();}
+void pre_auton() {}
 
 //This takes from Match for get the auton function which takes one of the possible autons.
 //The testPID() is the only test you need that goes back and forth to test straight and turning pid.
@@ -787,9 +831,9 @@ task autonomous(){
 
 //User control only deploys when autonRan is false
 task usercontrol(){
-	/**startTask(dataLog);
+	startTask(dataLog);
 	startTask(coneControl);
-	startTask(driveControl);
+	//startTask(driveControl);
 	startTask(mobileGoalMotors);
 	resetEncoders();
 	if(!autonRan){
@@ -807,14 +851,14 @@ task usercontrol(){
 		//mobileGoal = false;
 		//groundSetUpConeWait();
 		getOutOfTheWayMid();
-	}*/
-	resetLiftEncoders();
+	}
+	/**resetLiftEncoders();
 	nMotorEncoder[intakeL]=0;
 	startTask(dataLog);
 	SensorValue(stage1Encoder)=0;
 	startTask(coneControl);
 	//startTask(driveControl);
-	//startTask(mobileGoalMotors);
+	startTask(mobileGoalMotors);
 	while(true){
 		if(vexRT[Btn8R]){
 			SensorValue(stage2Encoder)=0;
@@ -852,6 +896,6 @@ task usercontrol(){
 		if(vexRT[Btn7L]){
 			desiredStage1=100;
 			wait1Msec(200);
-		}*/
-	}
+		}
+	}*/
 }

@@ -40,6 +40,14 @@ float fsgn(int num){
     	return (-1);
 }
 
+float sciN(float lead, int power){
+	return lead*pow(10,power);
+}
+
+float polynom(float x, float zero, float one, float two, float three, float four, float five, float six){
+	return zero + one*x + two*x*x + three*x*x*x + four*x*x*x*x + five*x*x*x*x*x + six*x*x*x*x*x*x;
+}
+
 bool deadband(int val, int target, int db = 10){
 	return val > target + db || val < target - db;
 }

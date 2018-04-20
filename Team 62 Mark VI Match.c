@@ -349,6 +349,15 @@ void auton(int autonNumber){
 	startTask(stage1Control);
 	startTask(stage2Control);
 	//startTask(stallCheck);
+<<<<<<< HEAD
+=======
+	unfoldRobotAuton();
+
+	//if(autonNumber==)
+	//threeCones();
+	//tenZone();
+	//goStraight();
+>>>>>>> d7eba710dc4d95ef71b345d7679f64c30e861592
 
 	if(autonNumber==0){
 		stopTask(stage1Control);

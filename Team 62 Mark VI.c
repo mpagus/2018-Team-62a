@@ -818,6 +818,7 @@ task mobileGoalAuton(){
 			else
 				intake(-2);
 		}
+    delay(5);
 	}
 }
 

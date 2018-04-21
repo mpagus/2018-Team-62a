@@ -101,7 +101,7 @@ void driveBothWaitUntil(int value, int continueValue, int normalContinue = 50){
 	straight = true;
 	slewResetDrive = true;
 	desiredDrive = desiredDrive + value;
-	while(!deadband2(-SensorValue(leftEncoder), desiredDrive - value + continueValue, normalContinue)){
+	while(!deadband2(SensorValue(leftEncoder), desiredDrive - value + continueValue, normalContinue)){
 		wait1Msec(20);
 	}
 }
@@ -115,7 +115,7 @@ void driveBothWait(int value, int normalContinue = 25, int derivativeContinue = 
 	int timeOut = 0;
 	float oldEncoder = SensorValue(leftEncoder);
 	while(ticks<tickNum && timeOut<20){
-		if(deadband2(-SensorValue(leftEncoder), desiredDrive - value + continueValue, normalContinue) && deadband2(SensorValue(leftEncoder)-oldEncoder, 0, derivativeContinue))
+		if(deadband2(SensorValue(leftEncoder), desiredDrive - value + continueValue, normalContinue) && deadband2(SensorValue(leftEncoder)-oldEncoder, 0, derivativeContinue))
 			ticks++;
 		else
 			ticks = 0;
@@ -134,7 +134,7 @@ void turn(int value, int normalContinue = 140, int derivativeContinue = 80){
 	desiredTurn += value;
 	if(desiredTurn >= 3600)
 		desiredTurn = 3600 - desiredTurn;
-	desiredDrive = -SensorValue(leftEncoder);
+	desiredDrive = SensorValue(leftEncoder);
 }
 
 void turnWait(int value, int normalContinue = 100, int derivativeContinue = 5, int tickNum = 3){
@@ -158,7 +158,7 @@ void turnWait(int value, int normalContinue = 100, int derivativeContinue = 5, i
 		oldGyro = SensorValue(Gyro);
 		wait1Msec(20);
 	}
-	desiredDrive = -SensorValue(leftEncoder);
+	desiredDrive = SensorValue(leftEncoder);
 }
 
 void turn180DegreesL(){

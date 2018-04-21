@@ -24,7 +24,7 @@ task LCDTask(){
       clearLCDLine(0);
       clearLCDLine(1);
       if(num<10){
-        num++
+        num++;
       }
       else{
         num=0;
@@ -34,7 +34,8 @@ task LCDTask(){
         displayLCDCenteredString(0, "62:Cameron/Miles");
       }
       else{
-        displayLCDCenteredString(0, "62:"+autons[autonNumber]);
+        sprintf(output, "62:", autons[autonNumber]);
+        displayLCDCenteredString(0, output);
       }
       //sprintf(output, "Auton", autonNumber, " Batt Vars");
       //displayLCDString(1, 0, output);

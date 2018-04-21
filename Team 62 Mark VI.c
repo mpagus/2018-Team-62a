@@ -837,12 +837,16 @@ task dataLog(){
 	datalogClear();
 	datalogStart();
 	while(true){
-		datalogAddValueWithTimeStamp(0, desiredStage1);
+		/**datalogAddValueWithTimeStamp(0, desiredStage1);
 		datalogAddValueWithTimeStamp(1, SensorValue(stage1Encoder));
 		datalogAddValueWithTimeStamp(2, motor[stage1]);
 		datalogAddValueWithTimeStamp(3, desiredStage2);
 		datalogAddValueWithTimeStamp(4, SensorValue(stage2Encoder));
-		datalogAddValueWithTimeStamp(5, motor[stage2]);
+		datalogAddValueWithTimeStamp(5, motor[stage2]);*/
+		datalogAddValueWithTimeStamp(2, SensorValue(Gyro));
+		datalogAddValueWithTimeStamp(3, SensorValue(leftEncoder));
+		datalogAddValueWithTimeStamp(4, motor[rightDrive1]);
+		datalogAddValueWithTimeStamp(5, motor[leftDrive1]);
 		datalogAddValueWithTimeStamp(6, -desiredDrive);
 		datalogAddValueWithTimeStamp(7, desiredTurn);
 		batteryPower = nImmediateBatteryLevel;
@@ -864,7 +868,8 @@ void pre_auton() {
 //The testPID() is the only test you need that goes back and forth to test straight and turning pid.
 task autonomous(){
 	startTask(dataLog);
-	startTask(LCDTask);
+	autonNumber = 8;
+	//startTask(LCDTask);
 	auton(autonNumber);
 	//testPID();
 	//testTurn();

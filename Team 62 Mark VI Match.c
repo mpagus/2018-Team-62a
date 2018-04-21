@@ -1,12 +1,12 @@
 task drivebaseControlGyro(){
 	//desiredDrive = (SensorValue(leftEncoder) + SensorValue(rightEncoder)) / 2;
-	desiredDrive = -SensorValue(leftEncoder);
-	float kP = 0.085;
+	desiredDrive = SensorValue(leftEncoder);
+	float kP = 0.095;
 	float kD = 0.017;
-	float kPt = 0.27;
+	float kPt = 0.32;
 	float kDt = 0.0;
-	float kPt2 = 0.105;
-	float kDt2 = 0.119;
+	float kPt2 = 0.09;
+	float kDt2 = 0.3;
 	float error = 0;
 	float errorT = 0;
 	float derivative = 0;
@@ -30,7 +30,7 @@ task drivebaseControlGyro(){
 		else{
 			//avgEncoder = (SensorValue(rightEncoder) + SensorValue(leftEncoder)) / 2.0;
 			//error = desiredDrive - avgEncoder;
-			error = desiredDrive + SensorValue(leftEncoder);
+			error = desiredDrive - SensorValue(leftEncoder);
 			derivative = error - old;
 			old = error;
 			driveSpeed = slew(&slewVal, limit(kP*(error) + kD*derivative), 10);
@@ -345,16 +345,17 @@ void auton(int autonNumber){
 }
 
 void testPID(){
+	resetEncoders();
 	startTask(drivebaseControlGyro);
-	driveBothWait(1200);
+	driveBothWait(1400);
 	wait1Msec(1100);
 	turnWait(1800);
 	wait1Msec(1100);
-	driveBothWait(1200);
+	driveBothWait(1400);
 	wait1Msec(1100);
 	turnWait(1800);
 	wait1Msec(1100);
-	driveBothWait(1200);
+	driveBothWait(1400);
 }
 
 void testTurn(){

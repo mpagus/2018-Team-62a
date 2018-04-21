@@ -802,23 +802,22 @@ task mobileGoalAuton(){
 				outCount++;
 			}
 			else{
-				intake(10);
+				intake(15);
 			}
 		}
 		//Mobile goal in
 		else{
-			if(inCount<102){
+			if(inCount<120){
 				intake(-127);
 				inCount++;
 			}
-			else if(inCount<115){
+			else if(inCount<135){
 				intake(-7);
 				inCount++;
 			}
 			else
 				intake(-2);
 		}
-		delay(5);
 	}
 }
 
@@ -828,7 +827,7 @@ void mobileGoalIn(){
 }
 
 void mobileGoalOut(){
-	mobileGoal = true;
+	mobileGoal = false;
 	wait1Msec(680);
 }
 
@@ -847,7 +846,7 @@ task dataLog(){
 		datalogAddValueWithTimeStamp(3, SensorValue(leftEncoder));
 		datalogAddValueWithTimeStamp(4, motor[rightDrive1]);
 		datalogAddValueWithTimeStamp(5, motor[leftDrive1]);
-		datalogAddValueWithTimeStamp(6, -desiredDrive);
+		datalogAddValueWithTimeStamp(6, desiredDrive);
 		datalogAddValueWithTimeStamp(7, desiredTurn);
 		batteryPower = nImmediateBatteryLevel;
 		wait1Msec(75);

@@ -876,6 +876,7 @@ task usercontrol(){
 	startTask(coneControl);
 	startTask(driveControl);
 	startTask(mobileGoalMotors);
+  startTask(LCDTask);
 	resetEncoders();
 	if(!autonRan){
 		resetLiftEncoders();
@@ -901,43 +902,43 @@ task usercontrol(){
 	startTask(coneControl);
 	//startTask(driveControl);
 	startTask(mobileGoalMotors);
-	while(true){
-	if(vexRT[Btn8R]){
-	SensorValue(stage2Encoder)=0;
-	startTask(stage2Control);
-	startTask(stage1Control);
-	}
-	/**if(vexRT[Btn8U]){
-	desiredStage2=0;
-	wait1Msec(200);
-	}
-	if(vexRT[Btn8R]){
-	desiredStage2=450;
-	wait1Msec(200);
-	}
-	if(vexRT[Btn8D]){
-	desiredStage2=900;
-	wait1Msec(200);
-	}
-	if(vexRT[Btn8L]){
-	desiredStage2=1350;
-	wait1Msec(200);
-	}
-	if(vexRT[Btn7U]){
-	desiredStage1=0;
-	wait1Msec(200);
-	}
-	if(vexRT[Btn7R]){
-	desiredStage1=200;
-	wait1Msec(200);
-	}
-	if(vexRT[Btn7D]){
-	desiredStage1=400;
-	wait1Msec(200);
-	}
-	if(vexRT[Btn7L]){
-	desiredStage1=100;
-	wait1Msec(200);
-	}
+  while(true){
+  	if(vexRT[Btn8R]){
+    	SensorValue(stage2Encoder)=0;
+    	startTask(stage2Control);
+    	startTask(stage1Control);
+  	}
+  	if(vexRT[Btn8U]){
+    	desiredStage2=0;
+    	wait1Msec(200);
+  	}
+  	if(vexRT[Btn8R]){
+    	desiredStage2=450;
+    	wait1Msec(200);
+  	}
+  	if(vexRT[Btn8D]){
+    	desiredStage2=900;
+    	wait1Msec(200);
+  	}
+  	if(vexRT[Btn8L]){
+    	desiredStage2=1350;
+    	wait1Msec(200);
+  	}
+  	if(vexRT[Btn7U]){
+    	desiredStage1=0;
+    	wait1Msec(200);
+  	}
+  	if(vexRT[Btn7R]){
+    	desiredStage1=200;
+    	wait1Msec(200);
+  	}
+  	if(vexRT[Btn7D]){
+    	desiredStage1=400;
+    	wait1Msec(200);
+  	}
+  	if(vexRT[Btn7L]){
+    	desiredStage1=100;
+    	wait1Msec(200);
+  	}
 	}*/
 }

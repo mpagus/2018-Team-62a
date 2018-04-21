@@ -17,11 +17,25 @@ task LCDTask(){
   string output;
   int mode = 0;
   int choice = 0;
+  int num = 0;
+  int showAuton = false;
   while(true){
     if(mode == 0){ //Main Mode
       clearLCDLine(0);
       clearLCDLine(1);
-      displayLCDCenteredString(0, "62:Cameron/Miles");
+      if(num<10){
+        num++
+      }
+      else{
+        num=0;
+        showAuton=!showAuton;
+      }
+      if(!showAuton){
+        displayLCDCenteredString(0, "62:Cameron/Miles");
+      }
+      else{
+        displayLCDCenteredString(0, "62:"+autons[autonNumber]);
+      }
       //sprintf(output, "Auton", autonNumber, " Batt Vars");
       //displayLCDString(1, 0, output);
       displayLCDString(1, 0, "Auton Batts Vars");
@@ -99,6 +113,7 @@ task LCDTask(){
         if(nLCDButtons == centerButton){
           autonNumber = choice;
           mode = 0;
+          bLCDBacklight = true;
           waitForReleaseLCD();
         }
         else if(nLCDButtons == leftButton){

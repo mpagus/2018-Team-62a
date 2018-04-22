@@ -77,38 +77,12 @@ task LCDTask(){
     if(mode == 2){ //Autonomous Mode
       clearLCDLine(0);
       clearLCDLine(1);
-      if(!autonRunning)
+      if(!autonRan)
         displayLCDCenteredString(1, "<     Enter    >");
       else
         displayLCDCenteredString(1, "is currently running");
 
-      if(choice == 0){ //Zero Auton
-        displayLCDCenteredString(0, autons[0]);
-      }
-      if(choice == 1){ //First Auton
-        displayLCDCenteredString(0, autons[1]);
-      }
-      if(choice == 2){ //Second Auton
-        displayLCDCenteredString(0, autons[2]);
-      }
-      if(choice == 3){ //Third Auton
-        displayLCDCenteredString(0, autons[3]);
-      }
-      if(choice == 4){ //Fourth Auton
-        displayLCDCenteredString(0, autons[4]);
-      }
-      if(choice == 5){ //Fifth Auton
-        displayLCDCenteredString(0, autons[5]);
-      }
-      if(choice == 6){ //Sixth Auton
-        displayLCDCenteredString(0, autons[6]);
-      }
-      if(choice == 7){ //Seventh Auton
-        displayLCDCenteredString(0, autons[7]);
-      }
-      if(choice == 8){ //Eighth Auton
-        displayLCDCenteredString(0, autons[8]);
-      }
+      displayLCDCenteredString(0, autons[choice]);
 
       if(!autonRunning){ //Button Interface
         if(nLCDButtons == centerButton){
@@ -118,17 +92,17 @@ task LCDTask(){
           waitForReleaseLCD();
         }
         else if(nLCDButtons == leftButton){
-          if(choice>0)
+          if(choice > 0)
             choice--;
           else
-            choice+=8;
+            choice = choice + (sizeOf(autons) - 1);
           waitForReleaseLCD();
         }
         else if(nLCDButtons == rightButton){
-          if(choice<8)
+          if(choice < sizeOf(autons) - 1)
             choice++;
           else
-            choice-=8;
+            choice = choice - (sizeOf(autons) - 1);
           waitForReleaseLCD();
         }
       }

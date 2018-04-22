@@ -63,7 +63,6 @@ bool letIntakeGo = false;
 int autonNumber = 0;
 float LCDVar1 = 0;
 float LCDVar2 = 0;
-bool autonRunning = false;
 
 //Used to assign motor powers to intake
 void intake(int val){

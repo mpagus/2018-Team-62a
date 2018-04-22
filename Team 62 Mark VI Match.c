@@ -1,12 +1,14 @@
+int maxSpeed = 127;
+
 task drivebaseControlGyro(){
 	//desiredDrive = (SensorValue(leftEncoder) + SensorValue(rightEncoder)) / 2;
 	desiredDrive = SensorValue(leftEncoder);
-	float kP = 0.095;
-	float kD = 0.017;
-	float kPt = 0.32;
+	float kP = 0.12;
+	float kD = 0.021;
+	float kPt = 0.23;
 	float kDt = 0.0;
-	float kPt2 = 0.12;
-	float kDt2 = 0.3;
+	float kPt2 = 0.24;
+	float kDt2 = 0.38;
 	float error = 0;
 	float errorT = 0;
 	float derivative = 0;
@@ -33,7 +35,7 @@ task drivebaseControlGyro(){
 			error = desiredDrive - SensorValue(leftEncoder);
 			derivative = error - old;
 			old = error;
-			driveSpeed = slew(&slewVal, limit(kP*(error) + kD*derivative), 10);
+			driveSpeed = slew(&slewVal, limit(kP*(error) + kD*derivative, -maxSpeed, maxSpeed), 10, 4);
 			turnSpeed = limit(kPt*errorT + kDt*derivativeT, -1.75*abs(driveSpeed), 1.75*abs(driveSpeed));
 			drive(driveSpeed + turnSpeed, driveSpeed - turnSpeed);
 		}
@@ -152,53 +154,58 @@ void fourConesR(){
 	mobileGoal = false;
 	driveBothWait(0);
 	wait1Msec(600);
-	driveBothWaitUntil(-815, -205);
+	driveBothWaitUntil(-815, -405);
 	mobileGoal = true;
-	driveBothWait(165);
+	driveBothWait(0);
 	mobileGoal = false;
 }
 
 void fourConesL(){
+	driveBoth(1680);
 	unfoldRobotAuton();
 	mobileGoal = false;
-	driveBothWait(1600);
-	mobileGoalIn();
-	driveBoth(420);
-	moveStage2Wait(60);
-	groundSetUpConeWait();
+	driveBothWaitUntil(0, -60);
+	mobileGoal = true;
+	driveBoth(460);
+	wait1Msec(670);
+	moveStage1Wait(220);
+	moveStage2WaitUntil(60, -10);
 	driveBothWait(0);
-	groundPickUpConeWait();
+	groundPickUpCone();
 	desiredStage1 = 470;
 	wait1Msec(100);
-	driveBoth(360);
+	driveBoth(390);
 	normalStackCone(2);
-	groundSetUpConeWait();
-	driveBothWait(0);
-	groundPickUpConeWait();
+	groundSetUpCone();
+	wait1Msec(200);
+	groundPickUpCone();
 	desiredStage1 = 690;
 	wait1Msec(100);
-	driveBoth(350);
+	driveBoth(310);
 	normalStackCone(3);
-	groundSetUpConeWait();
-	driveBothWait(0);
-	groundPickUpConeWait();
+	groundSetUpCone();
+	wait1Msec(200);
+	groundPickUpCone();
 	desiredStage1 = 265;
 	wait1Msec(100);
-	driveBoth(-2720);
+	driveBoth(-2670);
 	normalStackCone(4);
+	groundSetUpCone();
+	wait1Msec(170);
 	getOutOfTheWayMid();
 	driveBothWait(0);
-	turn45DegreesR();
-	driveBothWait(-640);
+	/**turn45DegreesR();
+	driveBothWait(-840);
 	turn90DegreesR();
-	driveBothWaitUntil(1100, 840);
+	maxSpeed = 100;
+	driveBothWaitUntil(1040, 860);
 	mobileGoal = false;
+	wait1Msec(400);
 	driveBothWait(0);
-	wait1Msec(600);
-	driveBothWaitUntil(-1000, -300);
+	driveBothWaitUntil(-1040, -300);
 	mobileGoal = true;
-	driveBothWait(165);
-	mobileGoal = false;
+	driveBothWait(0);
+	maxSpeed = 127;*/
 }
 
 void tenZoneR(){

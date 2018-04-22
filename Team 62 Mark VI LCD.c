@@ -23,7 +23,7 @@ task LCDTask(){
     if(mode == 0){ //Main Mode
       clearLCDLine(0);
       clearLCDLine(1);
-      if(num<10){
+      if(num<25){
         num++;
       }
       else{
@@ -34,8 +34,8 @@ task LCDTask(){
         displayLCDCenteredString(0, "62:Cameron/Miles");
       }
       else{
-        sprintf(output, "62:", autons[autonNumber]);
-        displayLCDCenteredString(0, output);
+        displayLCDString(0, 0, "62:");
+				displayNextLCDString(autons[autonNumber])
       }
       //sprintf(output, "Auton", autonNumber, " Batt Vars");
       //displayLCDString(1, 0, output);
@@ -114,7 +114,7 @@ task LCDTask(){
         if(nLCDButtons == centerButton){
           autonNumber = choice;
           mode = 0;
-          bLCDBacklight = true;
+          bLCDBacklight = false;
           waitForReleaseLCD();
         }
         else if(nLCDButtons == leftButton){

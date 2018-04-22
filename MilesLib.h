@@ -106,7 +106,7 @@ void driveBothWaitUntil(int value, int continueValue, int normalContinue = 50){
 	}
 }
 
-void driveBothWait(int value, int normalContinue = 25, int derivativeContinue = 5, int tickNum = 5){
+void driveBothWait(int value, int normalContinue = 65, int derivativeContinue = 8, int tickNum = 5){
 	straight = true;
 	slewResetDrive = true;
 	desiredDrive = desiredDrive + value;
@@ -137,7 +137,7 @@ void turn(int value, int normalContinue = 140, int derivativeContinue = 80){
 	desiredDrive = SensorValue(leftEncoder);
 }
 
-void turnWait(int value, int normalContinue = 100, int derivativeContinue = 5, int tickNum = 3){
+void turnWait(int value, int normalContinue = 130, int derivativeContinue = 9, int tickNum = 3){
 	straight = false;
 	slewResetDrive = true;
 	desiredTurn += value;

@@ -99,7 +99,7 @@ void resetLiftEncoders(){
 }
 
 float kP1 = 1.60;
-float kI1 = 0.005;
+float kI1 = 0.0025;
 float kD1 = 140;
 
 //Stage 1 pid control
@@ -242,27 +242,49 @@ void stage2Revolution(){
 
 //Picks up normal cone (with jab)
 void groundPickUpCone(){
-	moveStage1Wait(-15, 35);
-	wait1Msec(20);
+	//moveStage1Wait(-22, 35);
+	//wait1Msec(30);
+
+	desiredStage1 = -15;
+	wait1Msec(100);
+	desiredStage2 = 145;
+
+	//moveStage1WaitUntil(-20, -15);
+	//desiredStage2 = 70;
 }
 
 //Picks up normal cone (waits to reach value)
 void groundPickUpConeWait(){
-	moveStage1Wait(-15, 35);
-	wait1Msec(120);
-	desiredStage1 = SensorValue(stage1Encoder)+7;
-	desiredStage2 = SensorValue(stage2Encoder)-stage2Scalar+10;
+	//moveStage1Wait(-22, 35);
+	//wait1Msec(120);
+	//desiredStage1 = SensorValue(stage1Encoder)+14;
+	//desiredStage2 = SensorValue(stage2Encoder)-stage2Scalar+10;
+
+	desiredStage1 = -15;
+	wait1Msec(100);
+	moveBothStagesWait(-12, 145);
+
+	//moveStage1WaitUntil(-20, -15);
+	//moveBothStagesWait(-20, 70);
 }
 
 //Hovers above normal cone
 void groundSetUpCone(){
-	desiredStage1 = 190;
-	desiredStage2 = 40;
+	//desiredStage1 = 170;
+	//desiredStage2 = 35;
+
+	desiredStage1 = 170;
+	desiredStage2 = 25;
+	//desiredStage1 = 165;
+	//desiredStage2 = -60;
 }
 
 //Hovers above normal cone (waits to reach value)
 void groundSetUpConeWait(){
-	moveBothStagesWait(190, 40);
+	//moveBothStagesWait(170, 35);
+
+	moveBothStagesWait(170, 25);
+	//moveBothStagesWait(165, -60);
 }
 
 //Picks up preload
@@ -288,39 +310,27 @@ void preloadSetUpCone(){
 void normalStackCone(int cone, bool preload = false){
 	//cone1
 	if(cone == 1){
-		//moveStage1WaitUntil(405, 345);
-		//moveBothStagesWait(405, -270);
-		//moveBothStagesWait(190, -350);
-		moveStage1WaitUntil(380, 280);
+		moveStage1WaitUntil(410, 320);
 		desiredStage2 = -400;
-		moveStage1Wait(380);
-		moveBothStagesWait(155, -400);
+		moveStage1Wait(410);
+		moveBothStagesWait(140, -400);
 	}
 	//cone2
 	else if(cone == 2){
-		//moveStage1WaitUntil(520, 435);
-		//moveBothStagesWait(520, -200);
-		//moveBothStagesWait(285, -310);
 		moveStage1WaitUntil(470, 400);
-		desiredStage2 = -365;
+		desiredStage2 = -380;
 		moveStage1Wait(470);
-		moveBothStagesWait(250, -365);
+		moveBothStagesWait(235, -380);
 	}
 	//cone3
 	else if(cone == 3){
-		//moveStage1WaitUntil(640, 505);
-		//desiredStage1 = 695;
-		//wait1Msec(50);
-		//moveStage2Wait(-10);
-		//moveBothStagesWait(400, -200);
 		moveStage1WaitUntil(690, 630);
-		desiredStage2 = -260;
-		moveBothStagesWait(365, -260);
+		moveBothStagesWait(350, -260);
 	}
 	//cone4
 	else if(cone == 4){
-		moveStage1WaitUntil(265, 150);
-		moveBothStagesWait(260, 1250);
+		moveStage1WaitUntil(270, 150);
+		moveBothStagesWait(265, 1250);
 		desiredStage1 = 0;
 		wait1Msec(190);
 		groundSetUpCone();
@@ -329,8 +339,8 @@ void normalStackCone(int cone, bool preload = false){
 	}
 	//cone5
 	else if(cone == 5){
-		moveStage1WaitUntil(330, 130);
-		moveBothStagesWait(325, 1235);
+		moveStage1WaitUntil(340, 130);
+		moveBothStagesWait(335, 1235);
 		desiredStage1 = 80;
 		wait1Msec(190);
 		groundSetUpCone();
@@ -339,28 +349,28 @@ void normalStackCone(int cone, bool preload = false){
 	}
 	//cone6
 	else if(cone == 6){
-		moveStage1WaitUntil(370, 130);
-		moveBothStagesWait(365, 1175);
+		moveStage1WaitUntil(390, 130);
+		moveBothStagesWait(385, 1175);
 		desiredStage1 = 140;
-		wait1Msec(190);
+		wait1Msec(150);
 		groundSetUpCone();
 		desiredStage1 = 190;
 		wait1Msec(200);
 	}
 	//cone7
 	else if(cone == 7){
-		moveStage1WaitUntil(450, 130);
-		moveBothStagesWait(445, 1120);
-		desiredStage1 = 215;
+		moveStage1WaitUntil(455, 130);
+		moveBothStagesWait(450, 1080);
+		desiredStage1 = 210;
 		wait1Msec(150);
 		groundSetUpCone();
-		desiredStage1 = 265;
+		desiredStage1 = 260;
 		wait1Msec(100);
 	}
 	//cone8
 	else if(cone == 8){
 		moveStage1WaitUntil(615, 300);
-		moveBothStagesWait(615, 935);
+		moveBothStagesWait(610, 935);
 		moveBothStagesWait(445, 1058);
 		desiredStage1 = 300;
 		wait1Msec(100);
@@ -442,9 +452,14 @@ void getOutOfTheWayLow(int until = 110){
 	if(SensorValue(stage1Encoder)>170)
 		desiredStage2 = -450;
 	else{
-		moveStage1WaitUntil(170, until);
+		moveStage1WaitUntil(290, until);
 		desiredStage2 = -450;
 	}
+}
+
+void getOutOfTheWayLowAuton(int until = 110){
+	moveStage1WaitUntil(290, until);
+	desiredStage2 = -450;
 }
 
 //Unfolds the robot for driver control
@@ -458,8 +473,8 @@ void unfoldRobot(){
 
 //Unfolds the robot during atuonomous
 void unfoldRobotAuton(){
-	moveStage1Wait(220);
-	getOutOfTheWayLow();
+	moveStage1Wait(250);
+	getOutOfTheWayLowAuton();
 }
 
 task coneControl(){
@@ -506,10 +521,10 @@ task coneControl(){
 						intakeLowered = true;
 					}
 					while(vexRT[Btn6U]){
-						if(SensorValue(coneButtonSensor)){
+						if(SensorValue(coneButtonSensor) && currentConeStack<8){
 							wait1Msec(30);
-							groundPickUpCone();
-							wait1Msec(50);
+							groundPickUpConeWait();
+							wait1Msec(30);
 							currentConeStack++;
 							normalStackCone(currentConeStack);
 							groundSetUpCone();
@@ -654,11 +669,11 @@ task mobileGoalMotors(){
 				intake(0.85*(320-nMotorEncoder[intakeL])+0.001*integral); //general pid to get it to the pre-tip value
 			}
 			else{
-				if(nMotorEncoder[intakeL]<715){
+				if(nMotorEncoder[intakeL]<650){
 					intakeSides(35, 50); //brings the intake down unevenly
 				}
 				else{
-					intake(10);
+					intake(25);
 				}
 			}
 		}
@@ -669,33 +684,49 @@ task mobileGoalMotors(){
 		}
 		//Mobile goal out
 		else if(!mobileGoal){
-			if(currentConeStack<3){
-				if(outCount<110){
+			if(currentConeStack>5){
+				if(outCount<45){
 					intake(127);
 					outCount++;
 				}
 				else if(outCount<140){
-					intake(60);
+					intake(-1);
 					outCount++;
 				}
 				else{
-					if(vexRT[Ch2] > 5 || vexRT[Ch3] > 5)
+					if(vexRT[Ch2] > 15 || vexRT[Ch3] > 15)
+						intake(19);
+					else
+						intake(0);
+				}
+			}
+			else if(currentConeStack>3){
+				if(outCount<100){
+					intake(127);
+					outCount++;
+				}
+				else if(outCount<140){
+					intake(45);
+					outCount++;
+				}
+				else{
+					if(vexRT[Ch2] > 15 || vexRT[Ch3] > 15)
 						intake(19);
 					else
 						intake(0);
 				}
 			}
 			else{
-				if(outCount<80){
+				if(outCount<140){
 					intake(127);
 					outCount++;
 				}
-				else if(outCount<140){
-					intake(40);
+				/**else if(outCount<140){
+					intake(60);
 					outCount++;
-				}
+				}*/
 				else{
-					if(vexRT[Ch2] > 5 || vexRT[Ch3] > 5)
+					if(vexRT[Ch2] > 15 || vexRT[Ch3] > 15)
 						intake(19);
 					else
 						intake(0);
@@ -712,8 +743,10 @@ task mobileGoalMotors(){
 				intake(-7);
 				inCount++;
 			}
-			else
+			else{
 				intake(-2);
+				nMotorEncoder[intakeL]=0;
+			}
 		}
 		//Out/in control
 		if(vexRT[Btn5U] != accurate){
@@ -789,24 +822,26 @@ task mobileGoalMotors(){
 task mobileGoalAuton(){
 	mobileGoal = true;
 	int outCount = 0;
-	int inCount = 0;
+	int inCount = 150;
 	while(true){
 		//Mobile goal out
 		if(!mobileGoal){
-			if(outCount<80){
+			inCount=0;
+			if(outCount<120){
 				intake(127);
 				outCount++;
 			}
-			else if(outCount<140){
-				intake(40);
+			else if(outCount<150){
+				intake(60);
 				outCount++;
 			}
 			else{
-				intake(15);
+				intake(20);
 			}
 		}
 		//Mobile goal in
 		else{
+			outCount=0;
 			if(inCount<120){
 				intake(-127);
 				inCount++;
@@ -815,8 +850,9 @@ task mobileGoalAuton(){
 				intake(-7);
 				inCount++;
 			}
-			else
+			else{
 				intake(-2);
+			}
 		}
     delay(5);
 	}

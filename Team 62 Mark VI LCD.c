@@ -35,7 +35,7 @@ task LCDTask(){
       }
       else{
         displayLCDString(0, 0, "62:");
-				displayNextLCDString(autons[autonNumber])
+				displayNextLCDString(autons[autonNumber]);
       }
       //sprintf(output, "Auton", autonNumber, " Batt Vars");
       //displayLCDString(1, 0, output);
@@ -84,7 +84,7 @@ task LCDTask(){
 
       displayLCDCenteredString(0, autons[choice]);
 
-      if(!autonRunning){ //Button Interface
+      if(!autonRan){ //Button Interface
         if(nLCDButtons == centerButton){
           autonNumber = choice;
           mode = 0;
@@ -95,14 +95,14 @@ task LCDTask(){
           if(choice > 0)
             choice--;
           else
-            choice = choice + (sizeOf(autons) - 1);
+            choice = choice + (sizeof(autons) - 1);
           waitForReleaseLCD();
         }
         else if(nLCDButtons == rightButton){
-          if(choice < sizeOf(autons) - 1)
+          if(choice < sizeof(autons) - 1)
             choice++;
           else
-            choice = choice - (sizeOf(autons) - 1);
+            choice = choice - (sizeof(autons) - 1);
           waitForReleaseLCD();
         }
       }

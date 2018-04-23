@@ -106,7 +106,7 @@ void twoCones(bool right){
 	normalStackCone(2);
 	getOutOfTheWayMid();
 	driveBothWait(0);
-	twentyPointZoneR(right);
+	twentyPointZone(right);
 }
 
 void threeCones(bool right){
@@ -254,6 +254,29 @@ void tenZoneL(){
 	mobileGoal = false;
 }
 
+void defenceR(){
+	driveBoth(-2200);
+	unfoldRobotAuton();
+	mobileGoal = false;
+	driveBothWait(0);
+	turnWait(-325);
+	driveBothWaitUntil(500, 400);
+	mobileGoalIn();
+	turnWait(600);
+	driveBothWait(600);
+	turnWait(-500);
+	driveBothWait(1500);
+	mobileGoalOut();
+	driveBothWaitUntil(-500, -150);
+	mobileGoalIn();
+	turnWait(1600);
+	driveBothWait(300);
+}
+
+void defenceL(){
+
+}
+
 void goStraightR(){
 	turnWait(-400);
 	stopTask(drivebaseControlGyro);
@@ -301,10 +324,10 @@ void auton(int autonNumber){
 		tenZoneL();
 	}
 	if(autonNumber==5){
-		goStraight(true);
+		goStraightR();
 	}
 	if(autonNumber==6){
-		goStraight(false);
+		goStraightL();
 	}
 	if(autonNumber==7){
 		fourCones(true);
@@ -313,7 +336,6 @@ void auton(int autonNumber){
 		fourCones(false);
 	}
 	datalogStop();
-	autonRunning = false;
 }
 
 void testPID(){

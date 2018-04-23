@@ -221,11 +221,11 @@ void moveStage2Wait(float desiredValue){
 //The first number is the error continue
 //The second number is the derivative continue
 //The final number is the amount of 20 second clicks to move on
-void moveBothStagesWait(float desiredValue1, float desiredValue2){
+void moveBothStagesWait(float desiredValue1, float desiredValue2, int db=25){
 	desiredStage1 = desiredValue1;
 	desiredStage2 = desiredValue2;
 	//moveDoubleStageWait(stage1Encoder, desiredValue1, 60, 60, stage2Encoder, desiredValue2,  60, 60);
-	moveDoubleStageWait(stage1Encoder, desiredValue1, 25, 10, stage2Encoder, desiredValue2+numRevolutions*ticksPerRevolution + stage2Scalar, 25, 10, 3);
+	moveDoubleStageWait(stage1Encoder, desiredValue1, db, 10, stage2Encoder, desiredValue2+numRevolutions*ticksPerRevolution + stage2Scalar, db, 10, 3);
 }
 
 void stage2WaitValue(float value){
@@ -251,9 +251,8 @@ void groundPickUpCone(){
 	towerStage1(-95);
 	wait1Msec(50);
 	desiredStage2 = 90;
-	wait1Msec(230);
+	wait1Msec(260);
 	startTask(stage1Control);
-	desiredStage1 = 14;
 }
 
 //Picks up normal cone (waits to reach value)
@@ -262,9 +261,8 @@ void groundPickUpConeWait(){
 	towerStage1(-95);
 	wait1Msec(50);
 	desiredStage2 = 90;
-	wait1Msec(230);
+	wait1Msec(260);
 	startTask(stage1Control);
-	desiredStage1 = 14;
 }
 
 //Hovers above normal cone
@@ -275,7 +273,7 @@ void groundSetUpCone(){
 
 //Hovers above normal cone (waits to reach value)
 void groundSetUpConeWait(){
-	moveBothStagesWait(200, -25);
+	moveBothStagesWait(200, -25, 55);
 }
 
 //Picks up preload
@@ -304,19 +302,19 @@ void normalStackCone(int cone, bool preload = false){
 		moveStage1WaitUntil(420, 300);
 		desiredStage2 = -400;
 		moveStage1Wait(420);
-		moveBothStagesWait(165, -385);
+		moveBothStagesWait(165, -385, 40);
 	}
 	//cone2
 	else if(cone == 2){
 		moveStage1WaitUntil(490, 425);
 		desiredStage2 = -380;
 		moveStage1Wait(490);
-		moveBothStagesWait(235, -380);
+		moveBothStagesWait(235, -380, 40);
 	}
 	//cone3
 	else if(cone == 3){
 		moveStage1WaitUntil(690, 660);
-		moveBothStagesWait(360, -280);
+		moveBothStagesWait(360, -280, 40);
 	}
 	//cone4
 	else if(cone == 4){
@@ -362,7 +360,7 @@ void normalStackCone(int cone, bool preload = false){
 	else if(cone == 8){
 		moveStage1WaitUntil(635, 350);
 		moveBothStagesWait(635, 845);
-		moveBothStagesWait(445, 1030);
+		moveBothStagesWait(445, 1030, 40);
 		desiredStage1 = 300;
 		wait1Msec(150);
 		groundSetUpCone();

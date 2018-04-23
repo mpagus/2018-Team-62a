@@ -47,9 +47,9 @@ string autons[9]={"No Auton", "Three Cones R", "Three Cones L", "10 Pt Zone R", 
 
 void twentyPointZone(bool right){
 	if(right){
-		turn45DegreesL();
+		turn45DegreesR();
 		driveBothWait(-465);
-		turn90DegreesL();
+		turn90DegreesR();
 		driveBothWaitUntil(775, 730);
 		mobileGoal = false;
 		driveBothWait(0);
@@ -60,9 +60,9 @@ void twentyPointZone(bool right){
 		mobileGoal = false;
 	}
 	else{
-		turn45DegreesR();
+		turn45DegreesL();
 		driveBothWait(-465);
-		turn90DegreesR();
+		turn90DegreesL();
 		driveBothWaitUntil(775, 730);
 		mobileGoal = false;
 		driveBothWait(0);
@@ -143,7 +143,7 @@ void fourCones(bool right){
 	mobileGoal = false;
 	driveBothWaitUntil(0, -60);
 	mobileGoal = true;
-	driveBoth(460);
+	driveBoth(420);
 	wait1Msec(670);
 	moveStage1Wait(220);
 	moveStage2WaitUntil(60, -10);
@@ -165,7 +165,7 @@ void fourCones(bool right){
 	groundPickUpCone();
 	desiredStage1 = 265;
 	wait1Msec(100);
-	driveBoth(-2670);
+	driveBoth(-2630);
 	normalStackCone(4);
 	groundSetUpCone();
 	wait1Msec(170);

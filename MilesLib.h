@@ -204,7 +204,7 @@ void calibrateGyros(){
 	wait1Msec(250);
 	SensorType[Gyro] = sensorGyro;
 	wait1Msec(2000);
-	SensorScale[Gyro] = 139.7321;
+	SensorScale[Gyro] = 141.2847;
 }
 
 //arm movement

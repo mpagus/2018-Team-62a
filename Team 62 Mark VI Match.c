@@ -7,7 +7,7 @@ task drivebaseControlGyro(){
 	float kD = 0.021;
 	float kPt = 0.23;
 	float kDt = 0.0;
-	float kPt2 = 0.24;
+	float kPt2 = 0.225;
 	float kDt2 = 0.38;
 	float error = 0;
 	float errorT = 0;
@@ -48,44 +48,30 @@ string autons[9]={"No Auton", "Three Cones R", "Three Cones L", "10 Pt Zone R", 
 void twentyPointZone(bool right){
 	if(right){
 		turn45DegreesR();
-		driveBothWait(-465);
+		driveBothWait(-665);
 		turn90DegreesR();
-		driveBothWaitUntil(775, 730);
+		driveBothWaitUntil(940, 840);
 		mobileGoal = false;
 		driveBothWait(0);
 		wait1Msec(600);
-		driveBothWaitUntil(-815, -205);
+		driveBothWaitUntil(-1005, -285);
 		mobileGoal = true;
 		driveBothWait(165);
-		mobileGoal = false;
+		//mobileGoal = false;
 	}
 	else{
 		turn45DegreesL();
-		driveBothWait(-465);
+		driveBothWait(-665);
 		turn90DegreesL();
-		driveBothWaitUntil(775, 730);
+		driveBothWaitUntil(940, 840);
 		mobileGoal = false;
 		driveBothWait(0);
 		wait1Msec(600);
-		driveBothWaitUntil(-815, -205);
+		driveBothWaitUntil(-1005, -285);
 		mobileGoal = true;
 		driveBothWait(165);
-		mobileGoal = false;
+		//mobileGoal = false;
 	}
-}
-
-void twentyPointZoneL(){
-	turn45DegreesR();
-	driveBothWait(-465);
-	turn90DegreesR();
-	driveBothWaitUntil(775, 730);
-	mobileGoal = false;
-	driveBothWait(0);
-	wait1Msec(600);
-	driveBothWaitUntil(-815, -205);
-	mobileGoal = true;
-	driveBothWait(165);
-	mobileGoal = false;
 }
 
 void twoCones(bool right){
@@ -134,6 +120,7 @@ void threeCones(bool right){
 	normalStackCone(3);
 	getOutOfTheWayMid();
 	driveBothWait(0);
+	currentConeStack = 4;
 	twentyPointZone(right);
 }
 
@@ -143,34 +130,35 @@ void fourCones(bool right){
 	mobileGoal = false;
 	driveBothWaitUntil(0, -60);
 	mobileGoal = true;
-	driveBoth(420);
+	driveBoth(450);
 	wait1Msec(670);
-	moveStage1Wait(220);
+	moveStage1WaitUntil(170, 200);
 	moveStage2WaitUntil(60, -10);
 	driveBothWait(0);
 	groundPickUpCone();
 	desiredStage1 = 470;
 	wait1Msec(100);
-	driveBoth(390);
+	driveBoth(410);
 	normalStackCone(2);
 	groundSetUpCone();
 	wait1Msec(200);
 	groundPickUpCone();
 	desiredStage1 = 690;
 	wait1Msec(100);
-	driveBoth(310);
+	driveBoth(305);
 	normalStackCone(3);
 	groundSetUpCone();
 	wait1Msec(200);
 	groundPickUpCone();
 	desiredStage1 = 265;
 	wait1Msec(100);
-	driveBoth(-2630);
+	driveBoth(-2720);
 	normalStackCone(4);
 	groundSetUpCone();
 	wait1Msec(170);
 	getOutOfTheWayMid();
 	driveBothWait(0);
+	currentConeStack = 4;
 	twentyPointZone(right);
 }
 

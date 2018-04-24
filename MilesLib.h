@@ -106,7 +106,7 @@ void driveBothWaitUntil(int value, int continueValue, int normalContinue = 50){
 	}
 }
 
-void driveBothWait(int value, int normalContinue = 65, int derivativeContinue = 8, int tickNum = 5){
+void driveBothWait(int value, int normalContinue = 90, int derivativeContinue = 15, int tickNum = 5){
 	straight = true;
 	slewResetDrive = true;
 	desiredDrive = desiredDrive + value;
@@ -214,7 +214,7 @@ void moveSingleStageWaitUntil(tSensors sensor, float continueValue, int normalCo
 			wait1Msec(20);
 		}
 	}
-	else if(continueValue > SensorValue(sensor)){
+	else if(continueValue < SensorValue(sensor)){
 		while(SensorValue(sensor) > continueValue + normalContinue){
 			wait1Msec(20);
 		}

@@ -62,8 +62,10 @@ bool mobileGoalTip = false;
 bool intakeLowered = true;
 bool letIntakeGo = false;
 int autonNumber = 0;
+int autonCatagory = 0;
 float LCDVar1 = 0;
 float LCDVar2 = 0;
+bool autonRight = false;
 
 //Used to assign motor powers to intake
 void intake(int val){
@@ -999,7 +1001,6 @@ task autonomous(){
 	//startTask(LCDTask);
 	auton(autonNumber);
 	//testPID();
-	//testTurn();
 }
 
 //User control only deploys when autonRan is false

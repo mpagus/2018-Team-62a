@@ -19,6 +19,7 @@ task LCDTask(){
   int choice = 0;
   int num = 0;
   int showAuton = false;
+  int additionalNum = 0;
   while(true){
     if(mode == 0){ //Main Mode
       clearLCDLine(0);
@@ -37,13 +38,11 @@ task LCDTask(){
         displayLCDString(0, 0, "62:");
 				displayNextLCDString(autons[autonNumber]);
       }
-      //sprintf(output, "Auton", autonNumber, " Batt Vars");
-      //displayLCDString(1, 0, output);
       displayLCDString(1, 0, "Auton Batts Vars");
 
       if(nLCDButtons == leftButton){ //Auton Mode
         mode = 2;
-        choice = autonNumber;
+        choice = -1;
         waitForReleaseLCD();
       }
       if(nLCDButtons == centerButton){ //Battery Mode
@@ -66,7 +65,7 @@ task LCDTask(){
 
       //Display the Secondary Robot battery voltage
       displayLCDString(1, 0, "Batt 2: ");
-      sprintf(backupBattery, "%1.2f%c", SensorValue(PowerExpander)/1000.0, 'V');
+      sprintf(backupBattery, "%1.2f%c", SensorValue(PowerExpander)/70, 'V'); //or 280
       displayNextLCDString(backupBattery);
 
       //Exit from mode
@@ -77,33 +76,80 @@ task LCDTask(){
     if(mode == 2){ //Autonomous Mode
       clearLCDLine(0);
       clearLCDLine(1);
-      if(!autonRan)
-        displayLCDCenteredString(1, "<     Enter    >");
-      else
+      if(autonRan){
+        displayLCDCenteredString(0, auton[choice]);
         displayLCDCenteredString(1, "is currently running");
-
-      displayLCDCenteredString(0, autons[choice]);
+      }
 
       if(!autonRan){ //Button Interface
-        if(nLCDButtons == centerButton){
-          autonNumber = choice;
-          mode = 0;
-          bLCDBacklight = false;
-          waitForReleaseLCD();
+        if(choice==-1){
+          displayLCDCenteredString(0, "Choose A Side");
+          displayLCDCenteredString(1, "L    None      R");
+          if(nLCDButtons == leftButton){
+            choice = 0;
+            autonRight = false;
+            waitForReleaseLCD();
+          }
+          else if(nLCDButtons == centerButton){
+            choice = 0;
+            mode = 0;
+            autonNumber = 0;
+            waitForReleaseLCD();
+          }
+          else if(nLCDButtons == rightButton){
+            choice = 0;
+            autonRight = true;
+            waitForReleaseLCD();
+          }
         }
-        else if(nLCDButtons == leftButton){
-          if(choice > 0)
-            choice--;
-          else
-            choice = choice + (sizeof(autons) - 1);
-          waitForReleaseLCD();
+        else if(choice==0){
+          displayLCDCenteredString(0, autons[additionalNum][0]);
+          displayLCDCenteredString(1, "<    Enter     >");
+          if(nLCDButtons == leftButton){
+            if(additionalNum>0)
+              additionalNum--;
+            else
+              additionalNum=3;
+            waitForReleaseLCD();
+          }
+          else if(nLCDButtons == centerButton){
+            autonCatagory = additionalNum;
+            choice = 1;
+            waitForReleaseLCD();
+          } 
+          else if(nLCDButtons == rightButton){
+            if(additionalNum<3)
+              additionalNum++;
+            else
+              additionalNum=0;
+            waitForReleaseLCD();
+          }
         }
-        else if(nLCDButtons == rightButton){
-          if(choice < sizeof(autons) - 1)
-            choice++;
-          else
-            choice = choice - (sizeof(autons) - 1);
-          waitForReleaseLCD();
+        else{
+          displayLCDCenteredString(0, autons[additionalNum][choice]);
+          displayLCDCenteredString(1, "<    Enter     >");
+          if(nLCDButtons == leftButton){
+            if(choice>1)
+              choice--;
+            else{
+              while(autons[additionalNum][choice+1]==""){
+                choice++;
+              }
+            }
+            waitForReleaseLCD();
+          }
+          else if(nLCDButtons == centerButton){
+            autonNumber = choice;
+            mode=0;
+            waitForReleaseLCD();
+          } 
+          else if(nLCDButtons == rightButton){
+            if(autons[additionalNum][choice+1]!="")
+              choice++;
+            else
+              choice=1;
+            waitForReleaseLCD();
+          }
         }
       }
     }

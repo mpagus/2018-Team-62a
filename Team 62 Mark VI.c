@@ -66,6 +66,9 @@ int autonCatagory = 0;
 float LCDVar1 = 0;
 float LCDVar2 = 0;
 bool autonRight = false;
+bool incrementStack = false;
+bool decrementStack = false;
+bool zeroStack = false;
 
 //Used to assign motor powers to intake
 void intake(int val){
@@ -310,37 +313,38 @@ void normalStackCone(int cone, bool preload = false){
 	if(cone == 1){
 		moveStage1WaitUntil(420, 320);
 		//desiredStage2 = -400;
-		moveStage2WaitUntil(-400, -90);
-		moveBothStagesWait(165, -385, 40);
+		moveStage2WaitUntil(-200, -50);
+		moveBothStagesWait(150, -400, 50);
 	}
 	//cone2
 	else if(cone == 2){
 		moveStage1WaitUntil(505, 375);
 		//desiredStage2 = -450;
-		moveStage2WaitUntil(-450, -90);
-		moveBothStagesWait(235, -450, 40);
+		moveStage2WaitUntil(-200, -50);
+		moveBothStagesWait(220, -450, 40);
 	}
 	//cone3
 	else if(cone == 3){
 		moveStage1WaitUntil(690, 645);
-		moveBothStagesWait(335, -400, 60);
+		moveBothStagesWait(310, -465, 120);
 	}
 	//cone4
 	else if(cone == 4){
 		moveStage1WaitUntil(315, 150);
-		moveBothStagesWait(310, 1250);
+		moveBothStagesWait(310, 1250, 60);
 		desiredStage1 = 0;
-		wait1Msec(200);
+		desiredStage2 = 1300;
+		wait1Msec(290);
 		groundSetUpCone();
 		desiredStage1 = 50;
 		wait1Msec(200);
 	}
 	//cone5
 	else if(cone == 5){
-		moveStage1WaitUntil(355, 130);
-		moveBothStagesWait(350, 1205, 40);
-		desiredStage1 = 80;
-		wait1Msec(230);
+		moveStage1WaitUntil(360, 130);
+		moveBothStagesWait(355, 1205, 50);
+		desiredStage1 = 40;
+		wait1Msec(270);
 		groundSetUpCone();
 		desiredStage1 = 130;
 		wait1Msec(200);
@@ -348,28 +352,31 @@ void normalStackCone(int cone, bool preload = false){
 	//cone6
 	else if(cone == 6){
 		moveStage1WaitUntil(415, 130);
-		MoveStage2WaitUntil(1120, 1050);
+		MoveStage2WaitUntil(1120, 990);
+		wait1Msec(50);
 		desiredStage1 = 60;
-		wait1Msec(250);
+		wait1Msec(350);
 		groundSetUpCone();
 		desiredStage1 = 160;
 		wait1Msec(200);
 	}
 	//cone7
 	else if(cone == 7){
-		moveStage1WaitUntil(495, 130);
-		moveStage2WaitUntil(1025, 935);
-		desiredStage1 = 130;
-		wait1Msec(250);
+		moveStage1WaitUntil(485, 130);
+		moveStage2WaitUntil(1040, 855);
+		wait1Msec(150);
+		desiredStage2 = 1120;
+		desiredStage1 = 50;
+		wait1Msec(540);
 		groundSetUpCone();
 		desiredStage1 = 190;
 		wait1Msec(100);
 	}
 	//cone8
 	else if(cone == 8){
-		moveStage1WaitUntil(635, 350);
-		moveBothStagesWait(635, 845);
-		moveBothStagesWait(445, 1030, 40);
+		moveStage1WaitUntil(645, 350);
+		moveBothStagesWait(645, 845, 90);
+		moveBothStagesWait(445, 1030, 50);
 		desiredStage1 = 280;
 		wait1Msec(200);
 		groundSetUpCone();
@@ -479,22 +486,26 @@ void unfoldRobotAuton(){
 task stackControl(){
 	bool messUpButton = false;
 	bool incButton = false;
+	incrementStack = false;
+	decrementStack = false;
+	zeroStack = false;
 	while(true){
 		if(vexRT[Btn8R]){ //Reset cone height
-			currentConeStack = 0;
+			zeroStack = true;
 		}
 		if(vexRT[Btn8D] != messUpButton){ //Decrease cone height
 			messUpButton = !messUpButton;
 			if(messUpButton && currentConeStack > 0){
-				currentConeStack--;
+				decrementStack=true;
 			}
 		}
 		if(vexRT[Btn8U] != incButton){ //Increase cone height
 			incButton = !incButton;
 			if(incButton && currentConeStack < 7){
-				currentConeStack++;
+				incrementStack=true;
 			}
 		}
+		delay(30);
 	}
 }
 
@@ -521,7 +532,9 @@ task coneControl(){
 					}
 					if(!vexRT[Btn6U] && currentConeStack < 8){
 						currentConeStack++;
-						normalStackCone(currentConeStack);
+						if(currentConeStack<=8){
+							normalStackCone(currentConeStack);
+						}
 						if(currentConeStack!=8){
 							groundSetUpConeWait();
 							intakeLowered = true;
@@ -539,8 +552,10 @@ task coneControl(){
 							groundPickUpConeWait();
 							wait1Msec(30);
 							currentConeStack++;
-							normalStackCone(currentConeStack);
-							if(currentConeStack!=8){
+							if(currentConeStack<=8){
+								normalStackCone(currentConeStack);
+							}
+							if(currentConeStack<8){
 								groundSetUpConeWait();
 								intakeLowered = true;
 							}
@@ -550,6 +565,18 @@ task coneControl(){
 								getOutOfTheWay();
 								intakeLowered = false;
 							}
+						}
+						if(incrementStack){
+							currentConeStack++;
+							incrementStack=false;
+						}
+						if(decrementStack){
+							currentConeStack--;
+							decrementStack=false;
+						}
+						if(zeroStack){
+							currentConeStack=0;
+							zeroStack=false;
 						}
 						wait1Msec(50);
 					}
@@ -600,6 +627,18 @@ task coneControl(){
 					intakeLowered = false;
 				}
 			}
+		}
+		if(incrementStack){
+			currentConeStack++;
+			incrementStack=false;
+		}
+		if(decrementStack){
+			currentConeStack--;
+			decrementStack=false;
+		}
+		if(zeroStack){
+			currentConeStack=0;
+			zeroStack=false;
 		}
 		if(vexRT[Btn6D] != coneButton){ //Toggle between above cone and at cone height for pickup
 			coneButton = !coneButton;
@@ -704,6 +743,8 @@ task mobileGoalMotors(){
 						intake(15);
 					}
 					else{
+						intake(-7);
+						wait1Msec(100);
 						intake(3);
 					}
 				}
@@ -718,17 +759,19 @@ task mobileGoalMotors(){
 						intake(-22);
 					}
 					else{
+						intake(10);
+						wait1Msec(100);
 						intake(3);
 					}
 				}
 			}
 			else{
 				otherTimer++;
-				if(otherTimer<200){
-					intakeSides(15, 45); //brings the intake down unevenly
+				if(otherTimer<400){
+					intakeSides(17, 52); //brings the intake down unevenly
 				}
 				else{
-					intake(10);
+					intake(15);
 				}
 			}
 		}
@@ -793,17 +836,33 @@ task mobileGoalMotors(){
 		}
 		//Mobile goal in
 		else{
-			if(inCount<130){
-				intake(-127);
-				inCount++;
-			}
-			else if(inCount<145){
-				intake(-7);
-				inCount++;
+			if(deadband2(SensorValue(stage1Encoder),610,50) && deadband2(SensorValue(stage2Encoder),960,50)){
+				if(inCount<130){
+					intake(-127);
+					inCount++;
+				}
+				else if(inCount<145){
+					intake(-7);
+					inCount++;
+				}
+				else{
+					intake(-2);
+					nMotorEncoder[intakeL]=0;
+				}
 			}
 			else{
-				intake(-2);
-				nMotorEncoder[intakeL]=0;
+				if(inCount<130){
+					intake(-127);
+					inCount++;
+				}
+				else if(inCount<145){
+					intake(-7);
+					inCount++;
+				}
+				else{
+					intake(-2);
+					nMotorEncoder[intakeL]=0;
+				}
 			}
 		}
 		//Out/in control
@@ -891,20 +950,7 @@ task mobileGoalAuton(){
 		//Mobile goal out
 		if(!mobileGoal){
 			inCount=0;
-			if(currentConeStack>5){
-				if(outCount<90){
-					intake(127);
-					outCount++;
-				}
-				else if(outCount<140){
-					intake(15);
-					outCount++;
-				}
-				else{
-					intake(10);
-				}
-			}
-			else if(currentConeStack>3){
+			if(currentConeStack>3){
 				if(outCount<90){
 					intake(127);
 					outCount++;
@@ -960,6 +1006,7 @@ void mobileGoalOut(){
 	wait1Msec(680);
 }
 
+int LCDBTN = 0;
 //This task constantly runs in the background. Change the values as needed to get that data!
 task dataLog(){
 	datalogClear();
@@ -979,6 +1026,7 @@ task dataLog(){
 		datalogAddValueWithTimeStamp(7, desiredTurn);*/
 		datalogAddValueWithTimeStamp(1, motor[intakeL]);
 		batteryPower = nImmediateBatteryLevel;
+		LCDBTN = nLCDButtons;
 		wait1Msec(75);
 	}
 }
@@ -990,17 +1038,30 @@ task dataLog(){
 //This runs at the beginning of each reboot and calibrates the gyro. Keep the robot still for 2 seconds to calibrate.
 void pre_auton() {
 	calibrateGyros();
-	startTask(LCDTask);
+	//startTask(LCDTask);
 }
 
 //This takes from Match for get the auton function which takes one of the possible autons.
 //The testPID() is the only test you need that goes back and forth to test straight and turning pid.
 task autonomous(){
-	startTask(dataLog);
-	autonNumber = 8;
+	autonCatagory = 0;
+	autonNumber = 4;
 	//startTask(LCDTask);
-	auton(autonNumber);
+	//auton(autonNumber);
 	//testPID();
+
+	resetEncoders();
+	resetLiftEncoders();
+	datalogClear();
+	datalogStart();
+	startTask(dataLog);
+	startTask(drivebaseControlGyro);
+	startTask(mobileGoalAuton);
+	autonRan = true;
+	startTask(stage1Control);
+	startTask(stage2Control);
+	cones(4);
+	twentyPointZone(autonRight);
 }
 
 //User control only deploys when autonRan is false

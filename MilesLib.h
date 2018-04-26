@@ -209,13 +209,25 @@ void calibrateGyros(){
 
 //arm movement
 void moveSingleStageWaitUntil(tSensors sensor, float continueValue, int normalContinue){
+	int timeOut = 0;
+	float oldEncoder = SensorValue(sensor);
 	if(continueValue > SensorValue(sensor)){
 		while(SensorValue(sensor) < continueValue - normalContinue){
+			/**if(deadband2(SensorValue(sensor)-oldEncoder, 0, 30))
+				timeOut++;
+			else
+				timeOut=0;
+			oldEncoder = SensorValue(sensor);*/
 			wait1Msec(20);
 		}
 	}
 	else if(continueValue < SensorValue(sensor)){
 		while(SensorValue(sensor) > continueValue + normalContinue){
+			/**if(deadband2(SensorValue(sensor)-oldEncoder, 0, 30))
+				timeOut++;
+			else
+				timeOut=0;
+			oldEncoder = SensorValue(sensor);*/
 			wait1Msec(20);
 		}
 	}
@@ -232,6 +244,8 @@ void moveSingleStageWait(tSensors sensor, float continueValue, int normalContinu
 			ticks = 0;
 		if(deadband2(SensorValue(sensor)-oldEncoder, 0, 30))
 			timeOut++;
+		else
+			timeOut=0;
 		oldEncoder = SensorValue(sensor);
 		wait1Msec(5);
 	}

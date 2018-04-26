@@ -43,8 +43,7 @@ task drivebaseControlGyro(){
 	}
 }
 
-string autons[4][10]={{"20-Pt ", "One C", "Two C", "Three C", "Four C", "", "", "", "", ""},{"10-Pt ", "One C", "Two C", "Three C", "Four C", "", "", "", "", ""},{"Defence ", "Straight", "Back Push", "", "", "", "", ""},{"Other ", "None", "", "", "", "", "", "", "", "", ""}};
-
+string autons[4][10]={{"20-Pt ","One C","Two C","Three C","Four C","","","","",""},{"10-Pt ","One C","Two C","Three C","Four C","","","","",""},{"Defence ","Straight","Back Push","","","","","","",""},{"Other ","None","","","","","","","",""}};
 void twentyPointZone(bool right){
 	if(right){
 		turn45DegreesR();
@@ -84,64 +83,64 @@ void tenPointZone(bool right){
 	mobileGoal = false;
 }
 
-void cones(int num){
+void cones(int coneNum){
 	driveBoth(1680);
 	unfoldRobotAuton();
 	mobileGoal = false;
-	if(cones>=1){
+	if(coneNum>=1){
 		driveBothWaitUntil(0, -60);
 		mobileGoal = true;
 	}
-	if(cones>=2){
+	if(coneNum>=2){
 		driveBoth(450);
 		wait1Msec(670);
 	}
-	else if(cones==1){
+	else if(coneNum==1){
 		wait1Msec(600);
 		driveBoth(-1555);
 	}
-	if(cones>=1){
+	if(coneNum>=1){
 		moveStage1WaitUntil(170, 200);
 		moveStage2WaitUntil(60, -10);
 		driveBothWait(0);
 	}
-	if(cones>=2){
+	if(coneNum>=2){
 		groundPickUpCone();
 		desiredStage1 = 470;
 		wait1Msec(100);
 	}
-	if(counes>=3)
+	if(coneNum>=3)
 		driveBoth(410);
-	else if(cones==2){
+	else if(coneNum==2){
 		driveBoth(-2005);
 	}
-	if(cones>=2){
+	if(coneNum>=2){
 		normalStackCone(2);
 		groundSetUpCone();
 		wait1Msec(200);
 	}
-	if(cones>=3){
+	if(coneNum>=3){
 		groundPickUpCone();
 		desiredStage1 = 690;
 		wait1Msec(100);
 	}
-	if(cones>=4)
+	if(coneNum>=4)
 		driveBoth(305);
-	else if(cones==3){
+	else if(coneNum==3){
 		driveBoth(-2415);
 	}
-	if(cones>=3){
+	if(coneNum>=3){
 		normalStackCone(3);
 		groundSetUpCone();
 		wait1Msec(200);
 	}
-	if(cones>=4){
+	if(coneNum>=4){
 		groundPickUpCone();
 		desiredStage1 = 265;
 		wait1Msec(100);
 		driveBoth(-2720);
 	}
-	if(cone>=4){
+	if(coneNum>=4){
 		normalStackCone(4);
 		groundSetUpCone();
 		wait1Msec(170);
@@ -230,10 +229,10 @@ void auton(int autonNumber){
 		tenPointZone(autonRight);
 	}
 	else if(autonCatagory==2){
-		if(autonChoice==1){
+		if(autonNumber==1){
 			goStraight(autonRight);
 		}
-		else if(autonChoice==2){
+		else if(autonNumber==2){
 			defence(autonRight);
 		}
 	}

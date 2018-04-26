@@ -2,12 +2,15 @@ const short leftButton = 1;
 const short centerButton = 2;
 const short rightButton = 4;
 
+int num = 0;
+
 void waitForPressLCD(){
-	while(nLCDButtons == 0){wait1Msec(5);}
+	while(nLCDButtons == 0){wait1Msec(25);}
 }
 
 void waitForReleaseLCD(){
-	while(nLCDButtons != 0){wait1Msec(5);}
+	while(nLCDButtons != 0){wait1Msec(25);}
+	num++;
 }
 
 task LCDTask(){
@@ -36,7 +39,17 @@ task LCDTask(){
       }
       else{
         displayLCDString(0, 0, "62:");
-				displayNextLCDString(autons[autonNumber]);
+        if(choice==0){
+        	displayNextLCDString("None");
+      	}
+      	else{
+					displayNextLCDString(autons[autonCatagory][0]);
+	        displayNextLCDString(autons[autonCatagory][choice]);
+	        if(autonRight)
+	        	displayNextLCDString("R");
+	        else
+	        	displayNextLCDString("L");
+	      }
       }
       displayLCDString(1, 0, "Auton Batts Vars");
 
@@ -59,12 +72,12 @@ task LCDTask(){
       clearLCDLine(1);
 
       //Display the Primary Robot battery voltage
-      displayLCDString(0, 0, "Batt 1: ");
+      displayLCDString(0, 0, "Cortex: ");
       sprintf(mainBattery, "%1.2f%c", nImmediateBatteryLevel/1000.0,'V');
       displayNextLCDString(mainBattery);
 
       //Display the Secondary Robot battery voltage
-      displayLCDString(1, 0, "Batt 2: ");
+      displayLCDString(1, 0, "Power X: ");
       sprintf(backupBattery, "%1.2f%c", SensorValue(PowerExpander)/70, 'V'); //or 280
       displayNextLCDString(backupBattery);
 
@@ -77,7 +90,8 @@ task LCDTask(){
       clearLCDLine(0);
       clearLCDLine(1);
       if(autonRan){
-        displayLCDCenteredString(0, auton[choice]);
+        displayLCDString(0,0,autons[autonCatagory][0]);
+        displayNextLCDString(autons[autonCatagory][choice]);
         displayLCDCenteredString(1, "is currently running");
       }
 
@@ -116,7 +130,7 @@ task LCDTask(){
             autonCatagory = additionalNum;
             choice = 1;
             waitForReleaseLCD();
-          } 
+          }
           else if(nLCDButtons == rightButton){
             if(additionalNum<3)
               additionalNum++;
@@ -132,7 +146,7 @@ task LCDTask(){
             if(choice>1)
               choice--;
             else{
-              while(autons[additionalNum][choice+1]==""){
+              while(autons[additionalNum][choice+1]!=""){
                 choice++;
               }
             }
@@ -142,7 +156,8 @@ task LCDTask(){
             autonNumber = choice;
             mode=0;
             waitForReleaseLCD();
-          } 
+            bLCDBacklight = true;
+          }
           else if(nLCDButtons == rightButton){
             if(autons[additionalNum][choice+1]!="")
               choice++;

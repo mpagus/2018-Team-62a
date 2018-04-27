@@ -101,8 +101,15 @@ void driveBothWaitUntil(int value, int continueValue, int normalContinue = 50){
 	straight = true;
 	slewResetDrive = true;
 	desiredDrive = desiredDrive + value;
-	while(!deadband2(SensorValue(leftEncoder), desiredDrive - value + continueValue, normalContinue)){
-		wait1Msec(20);
+	if(desiredDrive > SensorValue(leftEncoder)){
+		while(SensorValue(leftEncoder) < desiredDrive - value + continueValue){
+			wait1Msec(20);
+		}
+	}
+	else if(desiredDrive < SensorValue(leftEncoder)){
+		while(SensorValue(leftEncoder) > continueValue + normalContinue){
+			wait1Msec(20);
+		}
 	}
 }
 
@@ -213,22 +220,26 @@ void moveSingleStageWaitUntil(tSensors sensor, float continueValue, int normalCo
 	float oldEncoder = SensorValue(sensor);
 	if(continueValue > SensorValue(sensor)){
 		while(SensorValue(sensor) < continueValue - normalContinue){
-			/**if(deadband2(SensorValue(sensor)-oldEncoder, 0, 30))
+			if(deadband2(SensorValue(sensor)-oldEncoder, 0, 30))
 				timeOut++;
 			else
 				timeOut=0;
-			oldEncoder = SensorValue(sensor);*/
+			oldEncoder = SensorValue(sensor);
 			wait1Msec(20);
+			//datalogAddValueWithTimeStamp(1, SensorValue(sensor));
+			//datalogAddValueWithTimeStamp(2, SensorValue(continueValue-normalContinue));
 		}
 	}
 	else if(continueValue < SensorValue(sensor)){
 		while(SensorValue(sensor) > continueValue + normalContinue){
-			/**if(deadband2(SensorValue(sensor)-oldEncoder, 0, 30))
+			if(deadband2(SensorValue(sensor)-oldEncoder, 0, 30))
 				timeOut++;
 			else
 				timeOut=0;
-			oldEncoder = SensorValue(sensor);*/
+			oldEncoder = SensorValue(sensor);
 			wait1Msec(20);
+			//datalogAddValueWithTimeStamp(1, SensorValue(sensor));
+			//datalogAddValueWithTimeStamp(2, SensorValue(continueValue+normalContinue));
 		}
 	}
 }

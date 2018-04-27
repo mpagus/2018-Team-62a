@@ -114,7 +114,7 @@ task stage1Control(){
 	float error = 0;
 	float integral = 0;
 	float derivative = 0;
-	long oldTime = 0;
+	long oldTime = nPgmTime-10;
 	while(true){
 		error = desiredStage1 - SensorValue(stage1Encoder);
 		integral = integral + (error*(nPgmTime-oldTime));
@@ -257,8 +257,13 @@ void groundPickUpCone(){
 	towerStage1(-120);
 	wait1Msec(50);
 	desiredStage2 = 90;
-	wait1Msec(330);
+	wait1Msec(360);
 	startTask(stage1Control);
+	/**desiredStage1 = -250;
+	wait1Msec(50);
+	desiredStage2 = 90;
+	wait1Msec(330);
+	desiredStage1 = SensorValue(stage1Encoder);*/
 }
 
 //Picks up normal cone (waits to reach value)
@@ -267,19 +272,24 @@ void groundPickUpConeWait(){
 	towerStage1(-120);
 	wait1Msec(50);
 	desiredStage2 = 90;
-	wait1Msec(330);
+	wait1Msec(360);
 	startTask(stage1Control);
+	/**desiredStage1 = -250;
+	wait1Msec(50);
+	desiredStage2 = 90;
+	wait1Msec(330);
+	desiredStage1 = SensorValue(stage1Encoder);*/
 }
 
 //Hovers above normal cone
 void groundSetUpCone(){
-	desiredStage1 = 200;
+	desiredStage1 = 215;
 	desiredStage2 = -25;
 }
 
 //Hovers above normal cone (waits to reach value)
 void groundSetUpConeWait(){
-	moveBothStagesWait(200, -25, 55);
+	moveBothStagesWait(215, -25, 55);
 }
 
 //Hovers above normal cone for autoloader
@@ -330,7 +340,8 @@ void normalStackCone(int cone, bool preload = false){
 	}
 	//cone4
 	else if(cone == 4){
-		moveStage1WaitUntil(315, 150);
+		//writeDebugStream("SensorValue: %d", SensorValue[stage1Encoder]);
+		moveStage1WaitUntil(315, 250);
 		moveBothStagesWait(310, 1250, 60);
 		desiredStage1 = 0;
 		desiredStage2 = 1300;
@@ -341,7 +352,7 @@ void normalStackCone(int cone, bool preload = false){
 	}
 	//cone5
 	else if(cone == 5){
-		moveStage1WaitUntil(360, 130);
+		moveStage1WaitUntil(360, 250);
 		moveBothStagesWait(355, 1205, 50);
 		desiredStage1 = 40;
 		wait1Msec(270);
@@ -351,7 +362,7 @@ void normalStackCone(int cone, bool preload = false){
 	}
 	//cone6
 	else if(cone == 6){
-		moveStage1WaitUntil(415, 130);
+		moveStage1WaitUntil(415, 250);
 		MoveStage2WaitUntil(1120, 990);
 		wait1Msec(50);
 		desiredStage1 = 60;
@@ -362,7 +373,7 @@ void normalStackCone(int cone, bool preload = false){
 	}
 	//cone7
 	else if(cone == 7){
-		moveStage1WaitUntil(485, 130);
+		moveStage1WaitUntil(485, 250);
 		moveStage2WaitUntil(1040, 855);
 		wait1Msec(150);
 		desiredStage2 = 1120;
@@ -378,6 +389,7 @@ void normalStackCone(int cone, bool preload = false){
 		moveBothStagesWait(645, 845, 90);
 		moveBothStagesWait(445, 1030, 50);
 		desiredStage1 = 280;
+
 		wait1Msec(200);
 		groundSetUpCone();
 		desiredStage1 = 350;
@@ -463,11 +475,6 @@ void getOutOfTheWayLow(int until = 110){
 	}
 }
 
-void getOutOfTheWayLowAuton(int until = 110){
-	moveStage1WaitUntil(290, until);
-	desiredStage2 = -450;
-}
-
 //Unfolds the robot for driver control
 void unfoldRobot(){
 	moveStage1Wait(220);
@@ -479,8 +486,8 @@ void unfoldRobot(){
 
 //Unfolds the robot during atuonomous
 void unfoldRobotAuton(){
-	moveStage1Wait(257);
-	getOutOfTheWayLowAuton();
+	moveStage1Wait(285);
+	desiredStage2=-450;
 }
 
 task stackControl(){
@@ -701,7 +708,7 @@ task coneControl(){
 				wait1Msec(80);
 			}
 		}
-		delay(5);
+		delay(25);
 	}
 }
 
@@ -733,10 +740,10 @@ task mobileGoalMotors(){
 			if(mobileGoalTip){
 				otherTimer++;
 				if(mobileGoal){
-					if(otherTimer<20){
+					if(otherTimer<4){
 						intake(100);
 					}
-					else if(otherTimer<30 && !SensorValue(mogoButton)){
+					else if(otherTimer<6 && !SensorValue(mogoButton)){
 						intake(50);
 					}
 					else if(!SensorValue(mogoButton)){
@@ -749,10 +756,10 @@ task mobileGoalMotors(){
 					}
 				}
 				else{
-					if(otherTimer<20){
+					if(otherTimer<4){
 						intake(-100);
 					}
-					else if(otherTimer<30 && SensorValue(mogoButton)){
+					else if(otherTimer<6 && SensorValue(mogoButton)){
 						intake(-50);
 					}
 					else if(SensorValue(mogoButton)){
@@ -767,11 +774,11 @@ task mobileGoalMotors(){
 			}
 			else{
 				otherTimer++;
-				if(otherTimer<400){
-					intakeSides(17, 52); //brings the intake down unevenly
+				if(otherTimer<70){
+					intakeSides(50, 50); //brings the intake down unevenly
 				}
 				else{
-					intake(15);
+					intake(17);
 				}
 			}
 		}
@@ -783,11 +790,11 @@ task mobileGoalMotors(){
 		//Mobile goal out
 		else if(!mobileGoal){
 			if(currentConeStack>5){
-				if(outCount<90){
+				if(outCount<18){
 					intake(127);
 					outCount++;
 				}
-				else if(outCount<140){
+				else if(outCount<28){
 					intake(15);
 					outCount++;
 				}
@@ -800,11 +807,11 @@ task mobileGoalMotors(){
 				}
 			}
 			else if(currentConeStack>3){
-				if(outCount<90){
+				if(outCount<18){
 					intake(127);
 					outCount++;
 				}
-				else if(outCount<140){
+				else if(outCount<28){
 					intake(34);
 					outCount++;
 				}
@@ -817,11 +824,11 @@ task mobileGoalMotors(){
 				}
 			}
 			else{
-				if(outCount<125){
+				if(outCount<20){
 					intake(127);
 					outCount++;
 				}
-				else if(outCount<155){
+				else if(outCount<30){
 					intake(60);
 					outCount++;
 				}
@@ -836,12 +843,12 @@ task mobileGoalMotors(){
 		}
 		//Mobile goal in
 		else{
-			if(deadband2(SensorValue(stage1Encoder),610,50) && deadband2(SensorValue(stage2Encoder),960,50)){
-				if(inCount<130){
+			/**if(deadband2(SensorValue(stage1Encoder),610,50) && deadband2(SensorValue(stage2Encoder),960,50)){
+				if(inCount<145){
 					intake(-127);
 					inCount++;
 				}
-				else if(inCount<145){
+				else if(inCount<160){
 					intake(-7);
 					inCount++;
 				}
@@ -849,21 +856,21 @@ task mobileGoalMotors(){
 					intake(-2);
 					nMotorEncoder[intakeL]=0;
 				}
+			}*/
+			//else{
+			if(inCount<21){
+				intake(-127);
+				inCount++;
+			}
+			else if(inCount<26){
+				intake(-60);
+				inCount++;
 			}
 			else{
-				if(inCount<130){
-					intake(-127);
-					inCount++;
-				}
-				else if(inCount<145){
-					intake(-7);
-					inCount++;
-				}
-				else{
-					intake(-2);
-					nMotorEncoder[intakeL]=0;
-				}
+				intake(-2);
+				nMotorEncoder[intakeL]=0;
 			}
+			//}
 		}
 		//Out/in control
 		if(vexRT[Btn5U] != accurate){
@@ -936,7 +943,7 @@ task mobileGoalMotors(){
 				letIntakeGo = false;
 			}
 		}*/
-		delay(5);
+		delay(25);
 	}
 }
 
@@ -951,11 +958,11 @@ task mobileGoalAuton(){
 		if(!mobileGoal){
 			inCount=0;
 			if(currentConeStack>3){
-				if(outCount<90){
+				if(outCount<60){
 					intake(127);
 					outCount++;
 				}
-				else if(outCount<140){
+				else if(outCount<85){
 					intake(34);
 					outCount++;
 				}
@@ -964,11 +971,11 @@ task mobileGoalAuton(){
 				}
 			}
 			else{
-				if(outCount<125){
+				if(outCount<60){
 					intake(127);
 					outCount++;
 				}
-				else if(outCount<155){
+				else if(outCount<70){
 					intake(60);
 					outCount++;
 				}
@@ -980,11 +987,11 @@ task mobileGoalAuton(){
 		//Mobile goal in
 		else{
 			outCount=0;
-			if(inCount<120){
+			if(inCount<80){
 				intake(-127);
 				inCount++;
 			}
-			else if(inCount<135){
+			else if(inCount<90){
 				intake(-7);
 				inCount++;
 			}
@@ -992,7 +999,7 @@ task mobileGoalAuton(){
 				intake(-2);
 			}
 		}
-    delay(5);
+    delay(25);
 	}
 }
 
@@ -1017,318 +1024,84 @@ task dataLog(){
 		datalogAddValueWithTimeStamp(2, motor[stage1]);
 		datalogAddValueWithTimeStamp(3, desiredStage2);
 		datalogAddValueWithTimeStamp(4, SensorValue(stage2Encoder));
-		datalogAddValueWithTimeStamp(5, motor[stage2]);
-		datalogAddValueWithTimeStamp(2, SensorValue(Gyro));
+		datalogAddValueWithTimeStamp(5, motor[stage2]);*/
+		/**datalogAddValueWithTimeStamp(2, SensorValue(Gyro));
 		datalogAddValueWithTimeStamp(3, SensorValue(leftEncoder));
 		datalogAddValueWithTimeStamp(4, motor[rightDrive1]);
 		datalogAddValueWithTimeStamp(5, motor[leftDrive1]);
 		datalogAddValueWithTimeStamp(6, desiredDrive);
 		datalogAddValueWithTimeStamp(7, desiredTurn);*/
-		datalogAddValueWithTimeStamp(1, motor[intakeL]);
+		LCDVar1=motor[intakeL];
+		LCDVar2=motor[intakeR];
+		//datalogAddValueWithTimeStamp(1, motor[intakeL]);
 		batteryPower = nImmediateBatteryLevel;
 		LCDBTN = nLCDButtons;
 		wait1Msec(75);
 	}
 }
 
+#include "Team 62 Mark VI Match.c"
 #include "Team 62 Mark VI LCD.c"
-
-int maxSpeed = 127;
-
-task drivebaseControlGyro(){
-  //desiredDrive = (SensorValue(leftEncoder) + SensorValue(rightEncoder)) / 2;
-  desiredDrive = SensorValue(leftEncoder);
-  float kP = 0.12;
-  float kD = 0.021;
-  float kPt = 0.23;
-  float kDt = 0.0;
-  float kPt2 = 0.225;
-  float kDt2 = 0.38;
-  float error = 0;
-  float errorT = 0;
-  float derivative = 0;
-  float derivativeT = 0;
-  float driveSpeed = 0;
-  float turnSpeed = 0;
-  float old = 0;
-  float oldT = 0;
-  int slewVal = 15;
-  while(true){
-    errorT = desiredTurn - SensorValue(Gyro);
-    derivativeT = errorT - oldT;
-    oldT = errorT;
-    if(slewResetDrive){
-      slewVal = 15;
-      slewResetDrive = false;
-    }
-    if(!straight){
-      drive(slew(&slewVal, limit(kPt2*errorT + kDt2*derivativeT), 6), -slew(&slewVal, limit(kPt2*errorT + kDt2*derivativeT), 6));
-    }
-    else{
-      //avgEncoder = (SensorValue(rightEncoder) + SensorValue(leftEncoder)) / 2.0;
-      //error = desiredDrive - avgEncoder;
-      error = desiredDrive - SensorValue(leftEncoder);
-      derivative = error - old;
-      old = error;
-      driveSpeed = slew(&slewVal, limit(kP*(error) + kD*derivative, -maxSpeed, maxSpeed), 10, 4);
-      turnSpeed = limit(kPt*errorT + kDt*derivativeT, -1.75*abs(driveSpeed), 1.75*abs(driveSpeed));
-      drive(driveSpeed + turnSpeed, driveSpeed - turnSpeed);
-    }
-    delay(20);
-  }
-}
-
-string autons[4][10]={{"20-Pt ","One C","Two C","Three C","Four C","","","","",""},{"10-Pt ","One C","Two C","Three C","Four C","","","","",""},{"Defence ","Straight","Back Push","","","","","","",""},{"Other ","None","","","","","","","",""}};
-void twentyPointZone(bool right){
-  if(right){
-    turn45DegreesR();
-  }
-  else{
-    turn45DegreesL();
-  }
-  driveBothWait(-665);
-  if(right){
-    turn90DegreesR();
-  }
-  else{
-    turn90DegreesL();
-  }
-  driveBothWaitUntil(940, 840);
-  mobileGoal = false;
-  driveBothWait(0);
-  wait1Msec(600);
-  driveBothWaitUntil(-1005, -285);
-  mobileGoal = true;
-  driveBothWait(165);
-}
-
-void tenPointZone(bool right){
-  if(right){
-    turnWait(-2070);
-  }
-  else{
-    turnWait(2070);
-  }
-  driveBothWait(380);
-  mobileGoal = false;
-  wait1Msec(1000);
-  driveBothWaitUntil(-570, -410);
-  mobileGoal = true;
-  driveBothWait(0);
-  mobileGoal = false;
-}
-
-void cones(int coneNum){
-  driveBoth(1680);
-  unfoldRobotAuton();
-  mobileGoal = false;
-  if(coneNum>=1){
-    driveBothWaitUntil(0, -60);
-    mobileGoal = true;
-  }
-  if(coneNum>=2){
-    driveBoth(450);
-    wait1Msec(670);
-  }
-  else if(coneNum==1){
-    wait1Msec(600);
-    driveBoth(-1555);
-  }
-  if(coneNum>=1){
-    moveStage1WaitUntil(170, 200);
-    moveStage2WaitUntil(60, -10);
-    driveBothWait(0);
-  }
-  if(coneNum>=2){
-    groundPickUpCone();
-    desiredStage1 = 470;
-    wait1Msec(100);
-  }
-  if(coneNum>=3)
-    driveBoth(410);
-  else if(coneNum==2){
-    driveBoth(-2005);
-  }
-  if(coneNum>=2){
-    normalStackCone(2);
-    groundSetUpCone();
-    wait1Msec(200);
-  }
-  if(coneNum>=3){
-    groundPickUpCone();
-    desiredStage1 = 690;
-    wait1Msec(100);
-  }
-  if(coneNum>=4)
-    driveBoth(305);
-  else if(coneNum==3){
-    driveBoth(-2415);
-  }
-  if(coneNum>=3){
-    normalStackCone(3);
-    groundSetUpCone();
-    wait1Msec(200);
-  }
-  if(coneNum>=4){
-    groundPickUpCone();
-    desiredStage1 = 265;
-    wait1Msec(100);
-    driveBoth(-2720);
-  }
-  if(coneNum>=4){
-    normalStackCone(4);
-    groundSetUpCone();
-    wait1Msec(170);
-  }
-  getOutOfTheWayMid();
-  driveBothWait(0);
-  currentConeStack = 4;
-}
-
-void defence(bool right){
-  driveBoth(-2200);
-  unfoldRobotAuton();
-  mobileGoal = false;
-  driveBothWait(0);
-  if(right){
-    turnWait(325);
-  }
-  else{
-    turnWait(-325);
-  }
-  driveBothWaitUntil(500, 400);
-  mobileGoalIn();
-  if(right){
-    turnWait(-600);
-  }
-  else{
-    turnWait(600);
-  }
-  driveBothWait(600);
-  if(right){
-    turnWait(500);
-  }
-  else{
-    turnWait(-500);
-  }
-  driveBothWait(1500);
-  mobileGoalOut();
-  driveBothWaitUntil(-500, -150);
-  mobileGoalIn();
-  if(right){
-    turnWait(-1600);
-  }
-  else{
-    turnWait(1600);
-  }
-  driveBothWait(300);
-}
-
-void goStraight(bool right){
-  if(right){
-    turnWait(-400);
-  }
-  else{
-    turnWait(400);
-  }
-  stopTask(drivebaseControlGyro);
-  drive(127, 127);
-  wait1Msec(1700);
-  drive(0, 0);
-}
-
-void auton(int autonNumber){
-  resetEncoders();
-  resetLiftEncoders();
-  datalogClear();
-  datalogStart();
-  startTask(dataLog);
-  startTask(drivebaseControlGyro);
-  startTask(mobileGoalAuton);
-  autonRan = true;
-  startTask(stage1Control);
-  startTask(stage2Control);
-  //startTask(stallCheck);
-
-  if(autonNumber==0){
-    stopTask(stage1Control);
-    stopTask(stage2Control);
-    wait1Msec(1000);
-  }
-  else if(autonCatagory==0){
-    cones(autonNumber);
-    twentyPointZone(autonRight);
-  }
-  else if(autonCatagory==1){
-    cones(autonNumber);
-    tenPointZone(autonRight);
-  }
-  else if(autonCatagory==2){
-    if(autonNumber==1){
-      goStraight(autonRight);
-    }
-    else if(autonNumber==2){
-      defence(autonRight);
-    }
-  }
-  else if(autonCatagory==3){
-    stopTask(stage1Control);
-    stopTask(stage2Control);
-    wait1Msec(1000);
-  }
-  datalogStop();
-}
-
-void testPID(){
-  resetEncoders();
-  startTask(drivebaseControlGyro);
-  driveBothWait(1400);
-  wait1Msec(1100);
-  turnWait(1800);
-  wait1Msec(1100);
-  driveBothWait(1400);
-  wait1Msec(1100);
-  turnWait(1800);
-  wait1Msec(1100);
-  driveBothWait(1400);
-}
 
 //This runs at the beginning of each reboot and calibrates the gyro. Keep the robot still for 2 seconds to calibrate.
 void pre_auton() {
 	calibrateGyros();
-	//startTask(LCDTask);
+	startTask(LCDTask);
 }
 
 //This takes from Match for get the auton function which takes one of the possible autons.
 //The testPID() is the only test you need that goes back and forth to test straight and turning pid.
 task autonomous(){
-	autonCatagory = 0;
-	autonNumber = 4;
-	//startTask(LCDTask);
-	//auton(autonNumber);
+	//autonCatagory = 0;
+	//autonNumber = 4;
+	autonCatagory = 2;
+	autonNumber = 2;
+	//autonRight = true;
+	auton(autonNumber);
 	//testPID();
-
-	resetEncoders();
-	resetLiftEncoders();
-	datalogClear();
-	datalogStart();
-	startTask(dataLog);
-	startTask(drivebaseControlGyro);
-	startTask(mobileGoalAuton);
-	autonRan = true;
-	startTask(stage1Control);
-	startTask(stage2Control);
-	cones(4);
-	twentyPointZone(autonRight);
 }
 
 //User control only deploys when autonRan is false
 task usercontrol(){
+	/**while(true){
+		if(vexRT[Btn8U]){
+			autonCatagory = 0;
+			autonNumber = 1;
+			auton(autonNumber);
+		}
+		if(vexRT[Btn8R]){
+			autonCatagory = 0;
+			autonNumber = 2;
+			auton(autonNumber);
+		}
+		if(vexRT[Btn8D]){
+			autonCatagory = 0;
+			autonNumber = 3;
+			auton(autonNumber);
+		}
+		if(vexRT[Btn8L]){
+			autonCatagory = 0;
+			autonNumber = 4;
+			auton(autonNumber);
+		}
+		if(vexRT[Btn8U]){
+			autonCatagory = 1;
+			autonNumber = 1;
+			auton(autonNumber);
+		}
+		if(vexRT[Btn8L]){
+			autonCatagory = 2;
+			autonNumber = 2;
+			auton(autonNumber);
+		}
+		if(vexRT[Btn6U]){
+			calibrateGyros();
+		}
+	}*/
 	startTask(dataLog);
-	startTask(coneControl);
 	startTask(driveControl);
+	startTask(coneControl);
 	startTask(mobileGoalMotors);
-  startTask(LCDTask);
 	resetEncoders();
 	if(!autonRan){
 		resetLiftEncoders();

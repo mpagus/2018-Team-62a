@@ -156,7 +156,7 @@ task LCDTask(){
             autonNumber = choice;
             mode=0;
             waitForReleaseLCD();
-            bLCDBacklight = true;
+            bLCDBacklight = false;
           }
           else if(nLCDButtons == rightButton){
             if(autons[additionalNum][choice+1]!="")
@@ -172,10 +172,10 @@ task LCDTask(){
       clearLCDLine(0);
       clearLCDLine(1);
 
-      sprintf(output, "LCDVar1: ", LCDVar1);
-      displayLCDCenteredString(0, output);
-      sprintf(output, "LCDVar2: ", LCDVar2);
-      displayLCDCenteredString(1, output);
+      displayLCDCenteredString(0, "LCDVar1: ");
+      displayNextLCDNumber(LCDVar1);
+      displayLCDCenteredString(1, "LCDVar2: ");
+      displayNextLCDNumber(LCDVar2);
 
       if(nLCDButtons != 0){
         mode = 0;

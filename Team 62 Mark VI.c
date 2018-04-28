@@ -467,10 +467,10 @@ void getOutOfTheWayMid(){
 
 //Low get out of the way for no cones (only in auton)
 void getOutOfTheWayLow(int until = 110){
-	if(SensorValue(stage1Encoder)>170)
+	if(SensorValue(stage1Encoder)>257)
 		desiredStage2 = -450;
 	else{
-		moveStage1WaitUntil(257, until);
+		moveStage1Wait(257);
 		desiredStage2 = -450;
 	}
 }
@@ -766,7 +766,7 @@ task mobileGoalMotors(){
 						intake(-22);
 					}
 					else{
-						intake(10);
+						intake(16);
 						wait1Msec(100);
 						intake(3);
 					}
@@ -775,10 +775,10 @@ task mobileGoalMotors(){
 			else{
 				otherTimer++;
 				if(otherTimer<70){
-					intakeSides(50, 50); //brings the intake down unevenly
+					intakeSides(50, 60); //brings the intake down unevenly
 				}
 				else{
-					intake(17);
+					intake(22);
 				}
 			}
 		}
@@ -803,7 +803,7 @@ task mobileGoalMotors(){
 						intake(15);
 					else
 						intake(5);*/
-					intake(10);
+					intake(16);
 				}
 			}
 			else if(currentConeStack>3){
@@ -820,7 +820,7 @@ task mobileGoalMotors(){
 						intake(15);
 					else
 						intake(5);*/
-					intake(10);
+					intake(16);
 				}
 			}
 			else{
@@ -837,7 +837,7 @@ task mobileGoalMotors(){
 						intake(15);
 					else
 						intake(5);*/
-					intake(10);
+					intake(16);
 				}
 			}
 		}
@@ -888,7 +888,7 @@ task mobileGoalMotors(){
 				if(!mobileGoal){
 					//This moves the arm out of the way to different locations based on the cone stack (If the arm moves out)
 					if(currentConeStack<=0){
-						getOutOfTheWayLow(80);
+						getOutOfTheWayLow(200);
 						wait1Msec(40);
 						intakeLowered = false;
 					}
@@ -958,29 +958,29 @@ task mobileGoalAuton(){
 		if(!mobileGoal){
 			inCount=0;
 			if(currentConeStack>3){
-				if(outCount<60){
+				if(outCount<18){
 					intake(127);
 					outCount++;
 				}
-				else if(outCount<85){
+				else if(outCount<28){
 					intake(34);
 					outCount++;
 				}
 				else{
-					intake(10);
+					intake(16);
 				}
 			}
 			else{
-				if(outCount<60){
+				if(outCount<20){
 					intake(127);
 					outCount++;
 				}
-				else if(outCount<70){
+				else if(outCount<30){
 					intake(60);
 					outCount++;
 				}
 				else{
-					intake(10);
+					intake(16);
 				}
 			}
 		}
@@ -1054,8 +1054,8 @@ void pre_auton() {
 task autonomous(){
 	//autonCatagory = 0;
 	//autonNumber = 4;
-	autonCatagory = 2;
-	autonNumber = 2;
+	//autonCatagory = 2;
+	//autonNumber = 2;
 	//autonRight = true;
 	auton(autonNumber);
 	//testPID();

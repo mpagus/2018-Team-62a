@@ -43,7 +43,7 @@ task drivebaseControlGyro(){
 	}
 }
 
-string autons[4][10]={{"20-Pt ","One C","Two C","Three C","Four C","","","","",""},{"10-Pt ","One C","Two C","Three C","Four C","","","","",""},{"D-f ","Straight","Back Push","","","","","","",""},{"Other ","None","","","","","","","",""}};
+string autons[4][10]={{"20-Pt ","One C","Two C","Three C","Four C","","","","",""},{"10-Pt ","One C","Two C","Three C","Four C","","","","",""},{"D-f ","Straight","Back Push","","","","","","",""},{"Other ","C-L 20","C-L 10","","","","","","",""}};
 void twentyPointZone(bool right){
 	if(right){
 		turn45DegreesR();
@@ -51,7 +51,7 @@ void twentyPointZone(bool right){
 	else{
 		turn45DegreesL();
 	}
-	driveBothWait(-665);
+	driveBothWait(-650);
 	if(right){
 		turn90DegreesR();
 	}
@@ -61,9 +61,9 @@ void twentyPointZone(bool right){
 	//driveBothWaitUntil(940, 800);
 	stopTask(drivebaseControlGyro);
 	drive(70, 70);
-	wait1Msec(400);
+	wait1Msec(500);
 	mobileGoal = false;
-	wait1Msec(250);
+	wait1Msec(150);
 	drive(0,0);
 	wait1Msec(600);
 	//driveBothWaitUntil(-1005, -285);
@@ -98,7 +98,7 @@ void oneCones(){
 	mobileGoal = true;
 	driveBoth(460);
 	wait1Msec(730);
-	moveStage1Wait(220);
+	moveStage1WaitUntil(165, 180);
 	moveStage2WaitUntil(60, -10);
 	driveBothWait(0);
 	groundPickUpCone();
@@ -118,7 +118,7 @@ void twoCones(){
 	mobileGoal = true;
 	driveBoth(460);
 	wait1Msec(730);
-	moveStage1Wait(220);
+	moveStage1WaitUntil(165, 180);
 	moveStage2WaitUntil(60, -10);
 	driveBothWait(0);
 	groundPickUpCone();
@@ -138,7 +138,7 @@ void threeCones(){
 	mobileGoal = true;
 	driveBoth(460);
 	wait1Msec(730);
-	moveStage1Wait(220);
+	moveStage1WaitUntil(165, 180);
 	moveStage2WaitUntil(60, -10);
 	driveBothWait(0);
 	groundPickUpCone();
@@ -158,7 +158,7 @@ void threeCones(){
 	currentConeStack = 4;
 }
 
-void fourCones(){
+void fourConesVersioned(){
 	driveBoth(1650);
 	unfoldRobotAuton();
 	mobileGoal = false;
@@ -190,8 +190,74 @@ void fourCones(){
 	groundPickUpCone();
 	wait1Msec(100);
 	desiredStage1 = 265;
+	wait1Msec(70);
+	driveBoth(-2685);
+	normalStackCone(4);
+	groundSetUpConeWait();
+	wait1Msec(170);
+	getOutOfTheWayMid();
+	driveBothWait(0);
+	currentConeStack = 4;
+}
+
+void fourCones(){
+	driveBoth(1650);
+	unfoldRobotAuton();
+	mobileGoal = false;
+	driveBothWaitUntil(0, -60);
+	mobileGoal = true;
+	driveBoth(460);
+	wait1Msec(730);
+	moveStage1WaitUntil(165, 180);
+	moveStage2WaitUntil(60, -10);
+	groundSetUpConeWait();
+	wait1Msec(50);
+	driveBothWait(0);
+	stopTask(drivebaseControlGyro);
+	drive(30,30);
+	while(!SensorValue(coneButtonSensor)){
+		wait1Msec(20);
+	}
+	drive(0,0);
+	startTask(drivebaseControlGyro);
+	groundPickUpCone();
+	wait1Msec(100);
+	desiredStage1 = 470;
 	wait1Msec(220);
-	driveBoth(-2720);
+	driveBoth(410);
+	normalStackCone(2);
+	groundSetUpConeWait();
+	driveBothWait(0);
+	stopTask(drivebaseControlGyro);
+	drive(30,30);
+	while(!SensorValue(coneButtonSensor)){
+		wait1Msec(20);
+	}
+	drive(0,0);
+	startTask(drivebaseControlGyro);
+	groundPickUpCone();
+	wait1Msec(100);
+	desiredStage1 = 690;
+	wait1Msec(220);
+	driveBoth(150);
+	normalStackCone(3);
+	groundSetUpConeWait();
+	driveBothWait(0);
+	stopTask(drivebaseControlGyro);
+	drive(30,30);
+	while(!SensorValue(coneButtonSensor)){
+		wait1Msec(20);
+	}
+	drive(0,0);
+	wait1Msec(30);
+	drive(-20,-20);
+	wait1Msec(70);
+	startTask(drivebaseControlGyro);
+	groundPickUpCone();
+	wait1Msec(100);
+	desiredStage1 = 265;
+	wait1Msec(70);
+	driveBoth(-2685);
 	normalStackCone(4);
 	groundSetUpConeWait();
 	wait1Msec(170);
@@ -202,12 +268,12 @@ void fourCones(){
 
 void defence(bool right){
 	maxSpeed = 80;
-	driveBoth(-3300); //-3300
+	driveBoth(-3410); //-3300
 	unfoldRobotAuton();
 	mobileGoal = false;
-	driveBothWaitUntil(0, 1650);
+	//driveBothWaitUntil(0, 1650);
 	//desiredTurn = -40;
-	driveBothWaitUntil(0, 2550);
+	//driveBothWaitUntil(0, 2550);
 	//desiredTurn = 50;
 	driveBothWait(0);
 	if(right){
@@ -229,16 +295,16 @@ void defence(bool right){
 	moveStage2WaitUntil(60, -10);
 	driveBothWait(0);
 	if(right){
-		turnWait(-450);
+		turnWait(-500); //470
 	}
 	else{
-		turnWait(450);
+		turnWait(500);
 	}
-	driveBothWaitUntil(1730, 1260);
+	driveBothWaitUntil(1760, 1260); //1700
 	getOutOfTheWayMid();
 	mobileGoalOut();
 	driveBothWait(0);
-	driveBothWaitUntil(-650, -150);
+	driveBothWaitUntil(-990, -150); //950
 	mobileGoalIn();
 	if(right){
 		desiredTurn+=-100;
@@ -248,12 +314,12 @@ void defence(bool right){
 	}
 	driveBothWait(0);
 	if(right){
-		turnWait(-900);
-	}
-	else{
 		turnWait(900);
 	}
-	driveBothWait(300);
+	else{
+		turnWait(-900);
+	}
+	driveBothWait(-300);
 }
 
 void goStraight(bool right){
@@ -267,6 +333,41 @@ void goStraight(bool right){
 	drive(127, 127);
 	wait1Msec(1700);
 	drive(0, 0);
+}
+
+void coneLaunchTwo(bool right){
+	unfoldRobotAuton();
+	desiredStage2=-25;
+	wait1Msec(100);
+	mobileGoal = false;
+	wait1Msec(800);
+	SensorValue(Gyro) = 0;
+	if(right){
+		desiredTurn = -200;
+	}
+	else{
+		desiredTurn = 200;
+	}
+	driveBoth(1680);
+	groundSetUpCone();
+	driveBothWaitUntil(0, -60);
+	mobileGoal = true;
+	driveBothWait(460);
+	groundPickUpCone();
+	desiredStage1 = 470;
+	wait1Msec(100);
+	driveBoth(390);
+	normalStackCone(2);
+	groundSetUpCone();
+	wait1Msec(200);
+	groundPickUpCone();
+	desiredStage1 = 690;
+	wait1Msec(100);
+	driveBoth(-2360);
+	normalStackCone(3);
+	getOutOfTheWayMid();
+	driveBothWait(0);
+	currentConeStack = 4;
 }
 
 void auton(int autonNumber){
@@ -296,7 +397,7 @@ void auton(int autonNumber){
 		else if(autonNumber==3)
 			threeCones();
 		else if(autonNumber==4)
-			fourCones();
+			fourConesVersioned();
 		twentyPointZone(autonRight);
 	}
 	else if(autonCatagory==1){
@@ -307,7 +408,7 @@ void auton(int autonNumber){
 		else if(autonNumber==3)
 			threeCones();
 		else if(autonNumber==4)
-			fourCones();
+			fourConesVersioned();
 		tenPointZone(autonRight);
 	}
 	else if(autonCatagory==2){
@@ -319,9 +420,14 @@ void auton(int autonNumber){
 		}
 	}
 	else if(autonCatagory==3){
-		stopTask(stage1Control);
-		stopTask(stage2Control);
-		wait1Msec(1000);
+		if(autonNumber==1){
+			coneLaunchTwo(autonRight);
+			twentyPointZone(autonRight);
+		}
+		else if(autonNumber==2){
+			coneLaunchTwo(autonRight);
+			tenPointZone(autonRight);
+		}
 	}
 	datalogStop();
 }

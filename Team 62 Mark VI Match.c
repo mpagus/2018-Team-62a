@@ -51,7 +51,7 @@ void twentyPointZone(bool right){
 	else{
 		turn45DegreesL();
 	}
-	driveBothWait(-650);
+	driveBothWait(-680);
 	if(right){
 		turn90DegreesR();
 	}
@@ -336,35 +336,39 @@ void goStraight(bool right){
 }
 
 void coneLaunchTwo(bool right){
-	unfoldRobotAuton();
+	desiredStage1=220;
 	desiredStage2=-25;
-	wait1Msec(100);
 	mobileGoal = false;
-	wait1Msec(800);
+	wait1Msec(700);
 	SensorValue(Gyro) = 0;
 	if(right){
-		desiredTurn = -200;
+		desiredTurn = -205;
 	}
 	else{
-		desiredTurn = 200;
+		desiredTurn = 265;
 	}
-	driveBoth(1680);
-	groundSetUpCone();
+	driveBoth(1790);
+	getOutOfTheWayLow();
 	driveBothWaitUntil(0, -60);
 	mobileGoal = true;
-	driveBothWait(460);
-	groundPickUpCone();
+	driveBothWait(535);
+	moveBothStagesWait(215, -25, 25);
+	wait1Msec(200);
+	groundPickUpConeWaitAuto();
 	desiredStage1 = 470;
 	wait1Msec(100);
-	driveBoth(390);
-	normalStackCone(2);
-	groundSetUpCone();
+	driveBoth(415);
+	normalStackCone(1);
+	moveBothStagesWait(215, -25, 25);
 	wait1Msec(200);
-	groundPickUpCone();
+	groundPickUpConeWaitAuto();
 	desiredStage1 = 690;
 	wait1Msec(100);
-	driveBoth(-2360);
-	normalStackCone(3);
+	driveBoth(-2390);
+	moveStage1WaitUntil(505, 375);
+	moveStage2WaitUntil(-200, -50);
+	moveBothStagesWait(200, -450, 40);
+	groundSetUpConeWait();
 	getOutOfTheWayMid();
 	driveBothWait(0);
 	currentConeStack = 4;

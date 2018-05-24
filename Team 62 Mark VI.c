@@ -280,6 +280,15 @@ void groundPickUpConeWait(){
 	wait1Msec(330);
 	desiredStage1 = SensorValue(stage1Encoder);*/
 }
+void groundPickUpConeWaitAuto(){
+	stopTask(stage1Control);
+	towerStage1(-120);
+	wait1Msec(100);
+	desiredStage2 = 90;
+	wait1Msec(360);
+	startTask(stage1Control);
+}
+
 
 //Hovers above normal cone
 void groundSetUpCone(){
@@ -1053,10 +1062,10 @@ void pre_auton() {
 //The testPID() is the only test you need that goes back and forth to test straight and turning pid.
 task autonomous(){
 	//autonCatagory = 0;
-	//autonNumber = 4;
-	//autonCatagory = 2;
-	//autonNumber = 2;
-	//autonRight = true;
+	//autonNumber = 3;
+	autonCatagory = 3;
+	autonNumber = 1;
+	autonRight = false;
 	auton(autonNumber);
 	//testPID();
 }
